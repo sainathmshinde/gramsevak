@@ -1,15 +1,19 @@
 import WithLayout from "@/components/layout/WithLayout";
-import { Suspense, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-// import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -19,9 +23,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 
-// import { put } from "@vercel/blob";
-// import { revalidatePath } from "next/cache";
+import { Book, FileText, Search, Upload } from "lucide-react";
+import { produce } from "immer";
+import RSelect from "@/components/ui/RSelect";
+import { getDepartments } from "@/services/preset";
+import DatePicker from "@/components/ui/datePicker";
+import WithAuthentication from "@/components/hoc/withAuthentication";
+import WithPermission from "@/components/hoc/withPermissions";
 
 export async function uploadDocument(formData) {
   const file = formData.get("file");
@@ -33,10 +43,6 @@ export async function uploadDocument(formData) {
     throw new Error("Missing required fields");
   }
 
-  //   const blob = await put(file.name, file, {
-  //     access: "public",
-  //   });
-
   // Here you would typically save the document metadata to your database
   // For this example, we'll just log it
   console.log({
@@ -45,8 +51,6 @@ export async function uploadDocument(formData) {
     name,
     url: blob.url,
   });
-
-  //   revalidatePath("/");
 }
 
 export async function getDocuments(search) {
@@ -65,10 +69,58 @@ export async function getDocuments(search) {
 }
 
 function UploadModal({ isOpen, onClose }) {
-  const [documentType, setDocumentType] = useState("book");
-  const [department, setDepartment] = useState("");
-  const [name, setName] = useState("");
-  const [file, setFile] = useState(null);
+  const [departments, setDepartments] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      let response = await getDepartments();
+      if (response?.status === "success") {
+        setDepartments(response.data);
+      }
+    })();
+  }, []);
+
+  const [document, setDocument] = useState({
+    type: "book",
+    date: "",
+    subject: "",
+    grNumber: "",
+    grCode: "",
+    file: null,
+    department: null,
+  });
+
+  const handleChange = (name) => (e) => {
+    const nextState = produce(document, (draft) => {
+      switch (name) {
+        case "type":
+          draft[name] = e;
+          break;
+
+        case "date":
+          draft[name] = e;
+          break;
+
+        case "subject":
+        case "grNumber":
+        case "grCode":
+          draft[name] = e.target.value;
+          break;
+
+        case "file":
+          draft[name] = e;
+          break;
+
+        case "department":
+          draft[name] = e;
+          break;
+
+        default:
+          break;
+      }
+    });
+    setDocument(nextState);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -100,42 +152,68 @@ function UploadModal({ isOpen, onClose }) {
           <DialogTitle>Upload Document</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <RadioGroup
-            value={documentType}
-            onValueChange={(value) => setDocumentType(value)}
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="book" id="book" />
-              <Label htmlFor="book">Book</Label>
+          <div className="space-y-2">
+            <RadioGroup
+              value={document?.type}
+              onValueChange={handleChange("type")}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="book" id="book" />
+                <Label htmlFor="book">Book</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="gr" id="gr" />
+                <Label htmlFor="gr">Government Resolution (GR)</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Date</Label>
+            <DatePicker onChange={handleChange("date")} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Department</Label>
+            <RSelect
+              options={departments}
+              nameProperty="departmentName"
+              valueProperty="departmentId"
+              onChange={handleChange("department")}
+              placeholder="Select Department"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Subject</Label>
+            <Input
+              type="text"
+              value={document.subject}
+              onChange={handleChange("subject")}
+            />
+          </div>
+
+          {document?.type === "gr" ? (
+            <div className="space-y-2">
+              <Label>GR Number</Label>
+              <Input
+                type="text"
+                value={document.grNumber}
+                onChange={handleChange("grNumber")}
+              />
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="gr" id="gr" />
-              <Label htmlFor="gr">Government Resolution (GR)</Label>
+          ) : null}
+
+          {document?.type === "gr" ? (
+            <div className="space-y-2">
+              <Label>GR Code</Label>
+              <Input
+                type="text"
+                value={document.grCode}
+                onChange={handleChange("grCode")}
+              />
             </div>
-          </RadioGroup>
-          <Select value={department} onValueChange={setDepartment}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="education">Education</SelectItem>
-              <SelectItem value="health">Health</SelectItem>
-              <SelectItem value="agriculture">Agriculture</SelectItem>
-              {/* Add more departments as needed */}
-            </SelectContent>
-          </Select>
-          <Input
-            type="text"
-            placeholder="Document name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <Input
-            type="file"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
-            required
-          />
+          ) : null}
           <Button type="submit">Upload</Button>
         </form>
       </DialogContent>
@@ -143,101 +221,191 @@ function UploadModal({ isOpen, onClose }) {
   );
 }
 
-function UploadButton() {
+const documents = [
+  {
+    documentName: "Policy Guidelines",
+    type: "Book",
+    documentLink: "https://example.com/policy-guidelines",
+    grNumber: "",
+    grCode: "",
+    department: "Education",
+    date: "2024-02-16",
+  },
+  {
+    documentName: "Annual Report 2023",
+    type: "Book",
+    documentLink: "https://example.com/annual-report-2023",
+    grNumber: "",
+    grCode: "",
+    department: "Finance",
+    date: "2024-01-10",
+  },
+  {
+    documentName: "Health Regulations",
+    type: "GR",
+    documentLink: "https://example.com/health-regulations",
+    grNumber: "GR-2024-001",
+    grCode: "HR001",
+    department: "Health",
+    date: "2024-02-12",
+  },
+  {
+    documentName: "Infrastructure Development Plan",
+    type: "GR",
+    documentLink: "https://example.com/infrastructure-plan",
+    grNumber: "GR-2024-002",
+    grCode: "INFRA002",
+    department: "Public Works",
+    date: "2024-02-14",
+  },
+  {
+    documentName: "Agricultural Subsidies Policy",
+    type: "GR",
+    documentLink: "https://example.com/agriculture-subsidies",
+    grNumber: "GR-2024-003",
+    grCode: "AGRI003",
+    department: "Agriculture",
+    date: "2024-02-15",
+  },
+  {
+    documentName: "Technology Innovation Report",
+    type: "Book",
+    documentLink: "https://example.com/tech-innovation",
+    grNumber: "",
+    grCode: "",
+    department: "Technology",
+    date: "2024-01-25",
+  },
+  {
+    documentName: "Environmental Protection Act",
+    type: "GR",
+    documentLink: "https://example.com/environment-act",
+    grNumber: "GR-2024-004",
+    grCode: "ENV004",
+    department: "Environment",
+    date: "2024-02-10",
+  },
+  {
+    documentName: "Civic Planning Handbook",
+    type: "Book",
+    documentLink: "https://example.com/civic-planning",
+    grNumber: "",
+    grCode: "",
+    department: "Urban Development",
+    date: "2024-02-05",
+  },
+  {
+    documentName: "Education Reform Strategy",
+    type: "GR",
+    documentLink: "https://example.com/education-reform",
+    grNumber: "GR-2024-005",
+    grCode: "EDU005",
+    department: "Education",
+    date: "2024-02-08",
+  },
+  {
+    documentName: "Economic Growth Analysis",
+    type: "Book",
+    documentLink: "https://example.com/economic-growth",
+    grNumber: "",
+    grCode: "",
+    department: "Finance",
+    date: "2024-01-20",
+  },
+];
+
+function UploadBooks() {
+  const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const filteredDocuments = documents.filter((doc) => {
+    const matchesFilter = filter === "all" || doc.type === filter;
+    const matchesSearch =
+      doc.documentName.toLowerCase().includes(search.toLowerCase()) ||
+      doc.department.toLowerCase().includes(search.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
   return (
-    <>
-      <Button onClick={() => setIsModalOpen(true)}>Upload Document</Button>
+    <div className="min-h-screen bg-gray-50">
+      <div>
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Government Documents
+            </h1>
+            <Button onClick={() => setIsModalOpen(true)}>
+              <Upload className="mr-2 h-4 w-4" />
+              Upload Document
+            </Button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              <Input
+                placeholder="Search documents..."
+                className="pl-10"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <Select value={filter} onValueChange={(value) => setFilter(value)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Documents</SelectItem>
+                <SelectItem value="book">Books</SelectItem>
+                <SelectItem value="gr">Government Resolutions</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredDocuments.map((doc, index) => (
+              <Card key={index} className="transition-shadow hover:shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-start gap-2">
+                    {doc.type === "book" ? (
+                      <Book className="h-5 w-5 text-primary" />
+                    ) : (
+                      <FileText className="h-5 w-5 text-primary" />
+                    )}
+                    {doc.documentName}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-2 text-sm text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Type:</span>
+                      <span className="capitalize">{doc.type}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold">Department:</span>
+                      <span className="capitalize">{doc.department}</span>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    variant="link"
+                    className="text-primary hover:text-primary/80"
+                  >
+                    View Document
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
       <UploadModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </>
-  );
-}
-
-function SearchBar() {
-  const [search, setSearch] = useState("");
-  //   const router = useRouter();
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // router.push(`/?search=${encodeURIComponent(search)}`);
-  };
-
-  return (
-    <form onSubmit={handleSearch} className="w-full max-w-md">
-      <Input
-        type="search"
-        placeholder="Search books and GRs..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-    </form>
-  );
-}
-
-function DocumentGrid() {
-  const mockDocuments = [
-    {
-      id: "1",
-      type: "book",
-      department: "education",
-      name: "Maharashtra Education Policy",
-      url: "#",
-    },
-    {
-      id: "2",
-      type: "gr",
-      department: "health",
-      name: "COVID-19 Guidelines",
-      url: "#",
-    },
-    {
-      id: "3",
-      type: "book",
-      department: "agriculture",
-      name: "Crop Management Techniques",
-      url: "#",
-    },
-  ];
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {mockDocuments.map((doc) => (
-        <Card key={doc.id}>
-          <CardHeader>
-            <CardTitle>{doc.name}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Type: {doc.type}</p>
-            <p>Department: {doc.department}</p>
-            <a
-              href={doc.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
-            >
-              View Document
-            </a>
-          </CardContent>
-        </Card>
-      ))}
     </div>
   );
 }
 
-function UploadBooks() {
-  return (
-    <main>
-      <h1 className="text-3xl font-bold mb-6">Government Documents</h1>
-      <div className="flex justify-between items-center mb-6">
-        <SearchBar />
-        <UploadButton />
-      </div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <DocumentGrid />
-      </Suspense>
-    </main>
-  );
-}
-
-export default WithLayout(UploadBooks);
+export default WithAuthentication(
+  WithPermission("upload")(WithLayout(UploadBooks))
+);

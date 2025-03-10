@@ -1,45 +1,115 @@
-import { useState } from "react";
+import WithAuthLayout from "@/components/layout/WithAuthLayout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import RSelect from "@/components/ui/RSelect";
+import { register } from "@/services/auth";
+import {
+  getBlocksByDistrictId,
+  getDesignations,
+  getDistricts,
+  getPanchayatByBlockId,
+} from "@/services/preset";
+import { produce } from "immer";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import WithAuthLayout from "@/components/layout/WithAuthLayout";
 
 function Register() {
   const navigate = useNavigate();
+  const [designations, setDesignations] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [blocks, setBlocks] = useState([]);
+  const [panchayats, setPanchayats] = useState([]);
   const [formData, setFormData] = useState({
-    fullName: "",
-    designation: "",
-    currentZillaParishad: "",
-    currentPanchayatSamiti: "",
-    currentGramPanchayatName: "",
+    firstName: "",
+    lastName: "",
+    designation: null,
+    currentZillaParishad: null,
+    currentPanchayatSamiti: null,
+    currentGramPanchayatName: null,
     mobileNumber: "",
     whatsappMobileNumber: "",
     emailId: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  useEffect(() => {
+    (async () => {
+      let res1 = await getDesignations();
+      let res2 = await getDistricts();
+
+      setDesignations(res1?.data);
+      setDistricts(res2?.data);
+    })();
+  }, []);
+
+  const handleChange = (name) => async (e) => {
+    let nextState = produce(formData, (draft) => {
+      switch (name) {
+        case "firstName":
+        case "lastName":
+          draft[name] = e.target.value;
+          break;
+        case "designation":
+          draft[name] = e;
+          break;
+        case "currentZillaParishad":
+          draft[name] = e;
+          break;
+        case "currentPanchayatSamiti":
+          draft[name] = e;
+          break;
+        case "currentGramPanchayatName":
+          draft[name] = e;
+          break;
+        case "mobileNumber":
+          draft[name] = e.target.value;
+          break;
+        case "whatsappMobileNumber":
+          draft[name] = e.target.value;
+          break;
+        case "emailId":
+          draft[name] = e.target.value;
+          break;
+
+        default:
+          break;
+      }
+    });
+    setFormData(nextState);
+
+    //get panchayat samiti
+    if (name === "currentZillaParishad" && e) {
+      let response = await getBlocksByDistrictId(e?.districtId);
+      setBlocks(response?.data);
+    }
+
+    //get gram panchayat
+    if (name === "currentPanchayatSamiti" && e) {
+      let response = await getPanchayatByBlockId(e?.blockId);
+      setPanchayats(response?.data);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log("Form submitted:", formData);
-    // You can add your submission logic here
+
+    let response = await register(formData);
+    if (response?.status === "success") {
+      navigate("/login");
+    } else {
+      console.log("error");
+    }
   };
+
+  console.log(formData);
 
   return (
     <div className="flex justify-center items-center min-h-screen ">
@@ -53,59 +123,75 @@ function Register() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="firstName">First Name</Label>
               <Input
-                id="fullName"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange("firstName")}
                 required
+                lang="mr"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange("lastName")}
+                required
+                lang="mr"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="designation">Designation</Label>
-              <Input
+              <RSelect
                 id="designation"
-                name="designation"
+                options={designations}
+                nameProperty="designationName"
+                valueProperty="designationId"
                 value={formData.designation}
-                onChange={handleChange}
-                required
+                onChange={handleChange("designation")}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="currentZillaParishad">
                 Current Zilla Parishad
               </Label>
-              <Input
-                id="currentZillaParishad"
-                name="currentZillaParishad"
+              <RSelect
+                id="ditrictName"
+                options={districts}
+                nameProperty="districtName"
+                valueProperty="districtId"
                 value={formData.currentZillaParishad}
-                onChange={handleChange}
-                required
+                onChange={handleChange("currentZillaParishad")}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="currentPanchayatSamiti">
                 Current Panchayat Samiti
               </Label>
-              <Input
-                id="currentPanchayatSamiti"
-                name="currentPanchayatSamiti"
+              <RSelect
+                id="blocks"
+                options={blocks}
+                nameProperty="blockName"
+                valueProperty="blockId"
                 value={formData.currentPanchayatSamiti}
-                onChange={handleChange}
-                required
+                onChange={handleChange("currentPanchayatSamiti")}
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="currentGramPanchayatName">
                 Current Gram Panchayat Name
               </Label>
-              <Input
-                id="currentGramPanchayatName"
-                name="currentGramPanchayatName"
+              <RSelect
+                id="panchayat"
+                options={panchayats}
+                nameProperty="panchayatName"
+                valueProperty="panchayatId"
                 value={formData.currentGramPanchayatName}
-                onChange={handleChange}
-                required
+                onChange={handleChange("currentGramPanchayatName")}
               />
             </div>
             <div className="space-y-2">
@@ -115,7 +201,7 @@ function Register() {
                 name="mobileNumber"
                 type="tel"
                 value={formData.mobileNumber}
-                onChange={handleChange}
+                onChange={handleChange("mobileNumber")}
                 required
               />
             </div>
@@ -128,7 +214,7 @@ function Register() {
                 name="whatsappMobileNumber"
                 type="tel"
                 value={formData.whatsappMobileNumber}
-                onChange={handleChange}
+                onChange={handleChange("whatsappMobileNumber")}
                 required
               />
             </div>
@@ -139,18 +225,13 @@ function Register() {
                 name="emailId"
                 type="email"
                 value={formData.emailId}
-                onChange={handleChange}
+                onChange={handleChange("emailId")}
                 required
               />
             </div>
           </CardContent>
           <CardFooter>
-            <Button
-              onClick={() => {
-                navigate("/login");
-              }}
-              className="w-full"
-            >
+            <Button onClick={handleSubmit} className="w-full">
               Register
             </Button>
           </CardFooter>

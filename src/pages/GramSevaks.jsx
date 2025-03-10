@@ -1,25 +1,10 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import WithLayout from "@/components/layout/WithLayout";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import RSelect from "@/components/ui/RSelect";
 import {
   Table,
   TableBody,
@@ -28,9 +13,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toast } from "@/hooks/use-toast";
+import {
+  changeStatus,
+  getGramSevakById,
+  getgramsevakList,
+} from "@/services/gramsevak";
+import { CheckIcon, CrossIcon, EyeIcon, Search } from "lucide-react";
+import WithAuthentication from "@/components/hoc/withAuthentication";
+import WithPermission from "@/components/hoc/withPermissions";
 
-function GramSevakTable({ data, onEdit, onDelete }) {
+function GramSevakTable({ data, onEdit, onApprove }) {
   const [editingGramSevak, setEditingGramSevak] = useState(null);
+  const [currentGramSevak, setCurrentGramSevak] = useState(null);
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -40,228 +35,197 @@ function GramSevakTable({ data, onEdit, onDelete }) {
     }
   };
 
+  const handleApprove = (index, status) => async (e) => {
+    let gramSevak = data[index];
+    let payload = {
+      gramSevakId: gramSevak.id,
+      status: status,
+    };
+
+    onApprove(payload);
+  };
+
+  const handleViewGramsevak = (index) => async (e) => {
+    let gramsevakId = data[index]?.id;
+
+    let response = await getGramSevakById(gramsevakId);
+    if (response?.status === "success") {
+      setCurrentGramSevak(response?.data);
+    } else {
+      toast.error("unable to get gramsevak details");
+    }
+  };
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>First Name</TableHead>
-          <TableHead>Last Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Block</TableHead>
-          <TableHead>District</TableHead>
-          <TableHead>Service ID</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((gramSevak) => (
-          <TableRow key={gramSevak.id}>
-            <TableCell>{gramSevak.firstName}</TableCell>
-            <TableCell>{gramSevak.lastName}</TableCell>
-            <TableCell>{gramSevak.email}</TableCell>
-            <TableCell>{gramSevak.block}</TableCell>
-            <TableCell>{gramSevak.district}</TableCell>
-            <TableCell>{gramSevak.serviceId}</TableCell>
-            <TableCell>
-              {gramSevak.isApproved ? "Approved" : "Pending"}
-            </TableCell>
-            <TableCell>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="mr-2"
-                    onClick={() => setEditingGramSevak(gramSevak)}
-                  >
-                    Edit
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Edit Gram Sevak</DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleEditSubmit} className="space-y-4">
-                    <div>
-                      <Label htmlFor="firstName">First Name</Label>
-                      <Input
-                        id="firstName"
-                        value={editingGramSevak?.firstName || ""}
-                        onChange={(e) =>
-                          setEditingGramSevak((prev) =>
-                            prev ? { ...prev, firstName: e.target.value } : null
-                          )
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        value={editingGramSevak?.lastName || ""}
-                        onChange={(e) =>
-                          setEditingGramSevak((prev) =>
-                            prev ? { ...prev, lastName: e.target.value } : null
-                          )
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        value={editingGramSevak?.email || ""}
-                        onChange={(e) =>
-                          setEditingGramSevak((prev) =>
-                            prev ? { ...prev, email: e.target.value } : null
-                          )
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="block">Block</Label>
-                      <Input
-                        id="block"
-                        value={editingGramSevak?.block || ""}
-                        onChange={(e) =>
-                          setEditingGramSevak((prev) =>
-                            prev ? { ...prev, block: e.target.value } : null
-                          )
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="district">District</Label>
-                      <Input
-                        id="district"
-                        value={editingGramSevak?.district || ""}
-                        onChange={(e) =>
-                          setEditingGramSevak((prev) =>
-                            prev ? { ...prev, district: e.target.value } : null
-                          )
-                        }
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="serviceId">Service ID</Label>
-                      <Input
-                        id="serviceId"
-                        value={editingGramSevak?.serviceId || ""}
-                        onChange={(e) =>
-                          setEditingGramSevak((prev) =>
-                            prev ? { ...prev, serviceId: e.target.value } : null
-                          )
-                        }
-                      />
-                    </div>
-                    <Button type="submit">Save Changes</Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
-              <Button
-                variant="destructive"
-                onClick={() => onDelete(gramSevak.id)}
-              >
-                Delete
-              </Button>
-            </TableCell>
+    <div className="border rounded-lg shadow-lg border-0">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>First Name</TableHead>
+            <TableHead>Last Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Block</TableHead>
+            <TableHead>District</TableHead>
+            <TableHead>Service ID</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {data.map((gramSevak, index) => (
+            <TableRow key={gramSevak.id}>
+              <TableCell>{gramSevak.firstName}</TableCell>
+              <TableCell>{gramSevak.lastName}</TableCell>
+              <TableCell>{gramSevak.email}</TableCell>
+              <TableCell>{gramSevak.block}</TableCell>
+              <TableCell>{gramSevak.district}</TableCell>
+              <TableCell>{gramSevak.serviceId}</TableCell>
+              <TableCell>
+                {gramSevak.isApproved ? "Approved" : "Pending"}
+              </TableCell>
+              <TableCell>
+                <Button
+                  variant="outline"
+                  className="mr-2"
+                  onClick={handleApprove(index, "Approved")}
+                >
+                  <CheckIcon />
+                </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={handleApprove(index, "Rejected")}
+                >
+                  <CrossIcon />
+                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="mx-5"
+                      onClick={handleViewGramsevak(index)}
+                    >
+                      <EyeIcon />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>User Information</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div>
+                          <h3 className="font-semibold">Personal Details</h3>
+                          <p>
+                            Name: {currentGramSevak?.firstName}{" "}
+                            {currentGramSevak?.lastName}
+                          </p>
+                          <p>
+                            Designation:{" "}
+                            {currentGramSevak?.designation.designationName}
+                          </p>
+                          <p>Mobile: {currentGramSevak?.mobileNumber}</p>
+                          <p>WhatsApp: {currentGramSevak?.whatsappNumber}</p>
+                          <p>Email: {currentGramSevak?.email}</p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-semibold">Location</h3>
+                          <p>
+                            District: {currentGramSevak?.district.districtName}
+                          </p>
+                          <p>Block: {currentGramSevak?.block.blockName}</p>
+                          <p>
+                            Gram Panchayat:{" "}
+                            {currentGramSevak?.gramPanchayat.gramPanchayatName}
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="font-semibold">Documents</h3>
+                          <ul className="list-disc pl-5">
+                            {currentGramSevak?.documents.map((doc, index) => (
+                              <li key={index}>
+                                {doc.documentType}: {doc.documentName} (
+                                {doc.document})
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </DialogContent>
+                </Dialog>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 
-const mockData = [
-  {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john@example.com",
-    block: "Block A",
-    district: "District 1",
-    serviceId: "GS001",
-    isApproved: true,
-  },
-  {
-    id: "2",
-    firstName: "Jane",
-    lastName: "Smith",
-    email: "jane@example.com",
-    block: "Block B",
-    district: "District 2",
-    serviceId: "GS002",
-    isApproved: false,
-  },
-  {
-    id: "3",
-    firstName: "Alice",
-    lastName: "Johnson",
-    email: "alice@example.com",
-    block: "Block C",
-    district: "District 1",
-    serviceId: "GS003",
-    isApproved: true,
-  },
-  {
-    id: "4",
-    firstName: "Bob",
-    lastName: "Brown",
-    email: "bob@example.com",
-    block: "Block A",
-    district: "District 3",
-    serviceId: "GS004",
-    isApproved: false,
-  },
-];
-
 function GramSevaks() {
-  const [gramSevaks, setGramSevaks] = useState(mockData);
-  const [filter, setFilter] = useState();
+  const [gramSevaks, setGramSevaks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusOptions, setStatusOptions] = useState([
+    { id: 1, name: "All" },
+    { id: 2, name: "Approved" },
+    { id: 3, name: "Pending Approval" },
+    { id: 4, name: "Rejected" },
+  ]);
+  const [statusValue, setStatusValue] = useState({ id: 1, name: "All" });
 
-  const filteredGramSevaks = gramSevaks.filter((gs) => {
-    if (filter === "approved") return gs.isApproved;
-    if (filter === "pending") return !gs.isApproved;
-    return true;
-  });
+  useEffect(() => {
+    (async () => {
+      let response = await getgramsevakList(
+        searchTerm,
+        statusValue?.name || ""
+      );
+      setGramSevaks(response?.data);
+    })();
+  }, [statusValue, searchTerm]);
 
-  const handleEdit = (id, updatedData) => {
-    setGramSevaks((prevGramSevaks) =>
-      prevGramSevaks.map((gs) =>
-        gs.id === id ? { ...gs, ...updatedData } : gs
-      )
-    );
-  };
-
-  const handleDelete = (id) => {
-    setGramSevaks((prevGramSevaks) =>
-      prevGramSevaks.filter((gs) => gs.id !== id)
-    );
+  const handleApprove = async (payload) => {
+    let response = await changeStatus(payload);
+    if (response.status === "success") {
+      setStatusValue({ id: 1, name: "All" });
+    } else {
+      //toast
+    }
   };
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-5">Gram Sevak Management</h1>
       <div className="flex justify-between items-center mb-5">
-        <Select value={filter} onValueChange={() => setFilter(value)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Gram Sevaks</SelectItem>
-            <SelectItem value="approved">Approved</SelectItem>
-            <SelectItem value="pending">Pending Approval</SelectItem>
-          </SelectContent>
-        </Select>
-        {/* <Button>Add New Gram Sevak</Button> */}
+        <div className="relative flex-1 mr-10">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <Input
+            placeholder="Search documents..."
+            className="pl-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <RSelect
+          options={statusOptions}
+          valueProperty="id"
+          nameProperty="name"
+          value={statusValue}
+          onChange={(e) => setStatusValue(e)}
+        />
       </div>
       <GramSevakTable
-        data={filteredGramSevaks}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+        data={gramSevaks}
+        onEdit={() => {}}
+        onApprove={handleApprove}
       />
     </div>
   );
 }
 
-export default WithLayout(GramSevaks);
+export default WithAuthentication(
+  WithPermission("gramSevaks")(WithLayout(GramSevaks))
+);

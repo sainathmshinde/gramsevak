@@ -2,6 +2,8 @@ import WithLayout from "@/components/layout/WithLayout";
 
 import { useState } from "react";
 import { Search, Download } from "lucide-react";
+import WithAuthentication from "@/components/hoc/withAuthentication";
+import WithPermission from "@/components/hoc/withPermissions";
 
 function MaterialCard({ material }) {
   const handleDownload = () => {
@@ -155,4 +157,4 @@ function Books() {
   );
 }
 
-export default WithLayout(Books);
+export default WithAuthentication(WithPermission("books")(WithLayout(Books)));

@@ -1,63 +1,54 @@
+import WithAuthentication from "@/components/hoc/withAuthentication";
+import WithPermission from "@/components/hoc/withPermissions";
 import WithLayout from "@/components/layout/WithLayout";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
+import { docUpload } from "@/services/gramsevak";
+import { getDocuments } from "@/services/upload";
+import { produce } from "immer";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const documentList = [
-  { name: "Photo", isMandatory: true },
-  { name: "ADHAAR Card", isMandatory: true },
-  { name: "PAN Card", isMandatory: true },
-  { name: "10th Passing Certificate", isMandatory: true },
-  { name: "Leaving Certificate", isMandatory: true },
-  { name: "Appointment Letter", isMandatory: true },
-  { name: "Bank Passbook", isMandatory: true },
-  { name: "Identity Proof", isMandatory: true },
-  { name: "Ration Card", isMandatory: false },
-  { name: "Birth Certificate", isMandatory: false },
-  { name: "Caste Certificate", isMandatory: false },
-  { name: "Passport", isMandatory: false },
-  { name: "10th Certificate", isMandatory: false },
-  { name: "12th Certificate", isMandatory: false },
-  { name: "Degree Passing Certificate", isMandatory: false },
-];
-
-async function uploadDocuments(formData) {
-  // Simulate a delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  const documents = {};
-
-  for (const [key, value] of formData.entries()) {
-    if (value instanceof File && value.size > 0) {
-      documents[key] = value;
-    }
-  }
-
-  // Here you would typically process and store the files
-  // For this example, we'll just log the file names
-  console.log("Uploaded documents:", Object.keys(documents));
-
-  return { success: true, message: "Documents uploaded successfully!" };
-}
 
 function DocumentUpload() {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const [documents, setDocuments] = useState([]);
+  useEffect(() => {
+    (async () => {
+      let response = await getDocuments();
+      if (response.status === "success") {
+        setDocuments(response.data);
+      } else {
+        //toast
+      }
+    })();
+  }, []);
 
-  const onSubmit = handleSubmit((data) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value) formData.append(key, value);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    debugger;
+    let formData = new FormData();
+    formData.append("files", documents);
+
+    let response = await docUpload(formData);
+
+    if (response.status === "success") {
+      //toast
+      navigate("/");
+    } else {
+      //toast
+    }
+  };
+
+  const handleChange = (index) => (e) => {
+    let nextState = produce(documents, (draft) => {
+      draft[index]["documents"] = e.target.files[0];
     });
-    // action(formData);
-  });
+
+    setDocuments(nextState);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-start to-purple-100 ">
       <div className="w-full max-w-4xl p-8 space-y-6 ">
@@ -68,32 +59,26 @@ function DocumentUpload() {
             asterisk (*) are mandatory.
           </p>
         </div>
-        <form onSubmit={onSubmit} className="space-y-6">
-          {documentList.map((doc) => (
-            <div key={doc.name} className="space-y-2">
-              <Label htmlFor={doc.name} className="flex items-center">
-                {doc.name}
-                {doc.isMandatory && (
-                  <span className="text-red-500 ml-1">*</span>
-                )}
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          {documents?.map((doc, index) => (
+            <div key={doc.documentTypeName} className="space-y-2">
+              <Label
+                htmlFor={doc.documentTypeName}
+                className="flex items-center"
+              >
+                {doc.documentTypeName}
+                {doc.mendatory && <span className="text-red-500 ml-1">*</span>}
               </Label>
               <Input
-                id={doc.name}
+                onChange={handleChange(index)}
+                id={doc.documentTypeName}
                 type="file"
-                // {...register(doc.name, { required: doc.isMandatory })}
+                required={doc.mendatory}
                 className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
               />
-              {errors[doc.name] && (
-                <p className="text-red-500 text-sm">This field is required</p>
-              )}
             </div>
           ))}
-          <Button
-            onClick={() => {
-              navigate("/");
-            }}
-            className="w-full"
-          >
+          <Button onClick={handleSubmit} className="w-full">
             Upload Documents
           </Button>
         </form>
@@ -102,4 +87,6 @@ function DocumentUpload() {
   );
 }
 
-export default WithLayout(DocumentUpload);
+export default WithAuthentication(
+  WithPermission("upload")(WithLayout(DocumentUpload))
+);

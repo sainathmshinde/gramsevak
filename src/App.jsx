@@ -2,20 +2,41 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import routes from "./routes";
+import { useEffect, useState } from "react";
+import { useDateStore, usePermissionStore, userStore } from "./lib/store";
+import { getYears, months } from "./lib/data";
+import { formatMonths, formatYears } from "./lib/helperFunctions";
+import { Toaster } from "react-hot-toast";
 
 function App() {
+  const setPermissions = usePermissionStore((state) => state.setPermissions);
+  const user = userStore((state) => state.user);
+  const setMonths = useDateStore((state) => state.setMonths);
+  const setYears = useDateStore((state) => state.setYears);
+
+  useEffect(() => {
+    (async () => {
+      const fMonths = formatMonths(months);
+      const fYears = formatYears(getYears());
+      setMonths(fMonths);
+      setYears(fYears);
+    })();
+  }, [user, setPermissions, setMonths, setYears]);
   return (
-    <Router>
-      <Routes>
-        {routes.map((route, index) => (
-          <Route
-            key={index + route.path}
-            path={route.path}
-            element={route.component}
-          />
-        ))}
-      </Routes>
-    </Router>
+    <div>
+      <Toaster />
+      <Router>
+        <Routes>
+          {routes.map((route, index) => (
+            <Route
+              key={index + route.path}
+              path={route.path}
+              element={route.component}
+            />
+          ))}
+        </Routes>
+      </Router>
+    </div>
   );
 }
 

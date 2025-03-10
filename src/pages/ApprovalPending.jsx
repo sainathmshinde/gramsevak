@@ -1,3 +1,5 @@
+import WithAuthLayout from "@/components/layout/WithAuthLayout";
+import WithLayout from "@/components/layout/WithLayout";
 import {
   Card,
   CardContent,
@@ -7,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
-export default function ApprovalPending() {
+function ApprovalPending() {
   return (
     <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -49,3 +51,5 @@ export default function ApprovalPending() {
     </div>
   );
 }
+
+export default WithLayout(ApprovalPending);

@@ -10,41 +10,60 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-// import { toast } from "@/components/ui/use-toast";
 import WithAuthLayout from "@/components/layout/WithAuthLayout";
 import { useNavigate } from "react-router-dom";
-
-// Simulated server action
-async function loginAction(prevState, formData) {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const mobile = formData.get("mobile");
-  const otp = formData.get("otp");
-
-  // Simple validation
-  if (!mobile || !otp) {
-    return { error: "Please fill in all fields" };
-  }
-
-  // Simulated successful login
-  return { success: true };
-}
+import { produce } from "immer";
+import { login, sendOtp } from "@/services/auth";
+import toast from "react-hot-toast";
+import { userStore } from "@/lib/store";
 
 function Login() {
   const navigate = useNavigate();
-  // const [state, action, isPending] = useActionState(loginAction);
   const [otpSent, setOtpSent] = useState(false);
+  const [loginDetails, setLoginDetails] = useState({
+    mobileNumber: "",
+    otp: "",
+  });
 
-  const sendOtp = () => {
-    // Simulate sending OTP
-    setTimeout(() => {
+  const updateUser = userStore((state) => state.updateUser);
+
+  const handleChange = (name) => (e) => {
+    const nextState = produce(loginDetails, (draft) => {
+      switch (name) {
+        case "mobileNumber":
+          draft[name] = e.target.value;
+          break;
+
+        case "otp":
+          draft[name] = e.target.value;
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    setLoginDetails(nextState);
+  };
+
+  const handleSendOtp = async () => {
+    let response = await sendOtp(loginDetails?.mobileNumber);
+    if (response?.status === "success") {
       setOtpSent(true);
-      // toast({
-      //   title: "OTP Sent",
-      //   description: "A One-Time Password has been sent to your mobile number.",
-      // });
-    }, 1000);
+      toast.success("OTP sent successfully!");
+    } else {
+      toast.error("Unable to send OTP, Please retry.");
+    }
+  };
+
+  const hadleLogin = async () => {
+    let response = await login(loginDetails);
+    if (response?.status === "success") {
+      updateUser(response?.data);
+      navigate("/");
+    } else {
+      console.log("error");
+    }
   };
 
   return (
@@ -65,6 +84,8 @@ function Login() {
                   id="mobile"
                   name="mobile"
                   placeholder="Enter your mobile number"
+                  value={loginDetails?.mobileNumber}
+                  onChange={handleChange("mobileNumber")}
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -74,36 +95,25 @@ function Login() {
                   name="otp"
                   placeholder="Enter OTP"
                   disabled={!otpSent}
+                  value={loginDetails?.otp}
+                  onChange={handleChange("otp")}
                 />
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
-          <Button
-            className="w-full"
-            onClick={() => {
-              navigate("/approval-pending");
-            }}
-          >
+          <Button className="w-full" onClick={handleSendOtp}>
             Send OTP
           </Button>
           <Button
             className="w-full"
             type="submit"
             form="login-form"
-            onClick={() => {
-              navigate("/uploaddocs");
-            }}
+            onClick={hadleLogin}
           >
             Login
           </Button>
-          {/* {state?.error && (
-            <p className="text-sm text-red-500">{state.error}</p>
-          )}
-          {state?.success && (
-            <p className="text-sm text-green-500">Login successful!</p>
-          )} */}
         </CardFooter>
       </Card>
     </div>

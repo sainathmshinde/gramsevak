@@ -1,3 +1,5 @@
+import WithAuthentication from "@/components/hoc/withAuthentication";
+import WithPermission from "@/components/hoc/withPermissions";
 import WithLayout from "@/components/layout/WithLayout";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Download, Search } from "lucide-react";
@@ -124,4 +126,6 @@ function FeatureCard({ icon, title, description }) {
   );
 }
 
-export default WithLayout(Dashboard);
+export default WithAuthentication(
+  WithPermission("home")(WithLayout(Dashboard))
+);

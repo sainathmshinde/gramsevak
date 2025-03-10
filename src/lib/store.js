@@ -10,12 +10,11 @@ export const userStore = create(
       removeUser: () => set(() => ({ user: null })),
       markUserProfileComplete: () =>
         set((state) => ({ user: { ...state.user, isProfileComplete: true } })),
-      
+
       markUserPolicy: () =>
         set((state) => ({ user: { ...state.user, isPolicy: true } })),
-  
     }),
-     
+
     {
       name: "user",
       storage: createJSONStorage(() => localStorage),
@@ -24,7 +23,20 @@ export const userStore = create(
 );
 
 export const usePermissionStore = create((set) => ({
-  permissions: null,
+  permissions: {
+    superAdmin: [
+      "home",
+      "profile",
+      "books",
+      "districtAdmins",
+      "blockAdmins",
+      "gramSevaks",
+      "upload",
+    ],
+    districtAdmin: ["home", "profile", "blockAdmins", "gramSevaks"],
+    blockAdmin: ["home", "profile", "gramSevaks", "upload"],
+    gramSevak: ["home", "profile", "books"],
+  },
   setPermissions: (newPermissions) =>
     set(() => ({
       permissions: newPermissions,

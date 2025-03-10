@@ -2,11 +2,13 @@ import ApprovalPending from "@/pages/ApprovalPending";
 import BlockAdmins from "@/pages/BlockAdmins";
 import Books from "@/pages/Books";
 import Dashboard from "@/pages/Dashboard";
+import DistrictAdmins from "@/pages/DistrictAdmins";
 import DocumentUpload from "@/pages/DocumentUpload";
 import GramSevaks from "@/pages/GramSevaks";
 import Login from "@/pages/Login";
 import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
+import UnauthorisedAccess from "@/pages/UnauthorisedAccess";
 import UploadBooks from "@/pages/UploadBooks";
 
 const routes = [
@@ -48,6 +50,11 @@ const routes = [
   },
   {
     exact: true,
+    path: "/district-admins",
+    component: <DistrictAdmins />,
+  },
+  {
+    exact: true,
     path: "/gram-sevaks",
     component: <GramSevaks />,
   },
@@ -60,6 +67,11 @@ const routes = [
     exact: true,
     path: "/approval-pending",
     component: <ApprovalPending />,
+  },
+  {
+    exact: true,
+    path: "/unauthorized",
+    component: <UnauthorisedAccess />,
   },
 ];
 
