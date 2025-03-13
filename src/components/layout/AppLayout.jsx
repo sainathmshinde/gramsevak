@@ -84,51 +84,49 @@ export default function AppLayout({ children }) {
       <div className="space-y-1">
         <MenuItem
           icon={LayoutDashboard}
-          text="Home"
+          text="मुख्यपृष्ठ"
           onClick={() => navigate("/")}
           path="/"
           permission={permissions[role]?.includes("home")}
         />
         <MenuItem
           icon={Users}
-          text="Profile"
+          text="प्रोफाईल"
           onClick={() => navigate("/profile")}
           path="/profile"
           permission={permissions[role]?.includes("profile")}
         />
         <MenuItem
           icon={FileCheck}
-          text="Books"
+          text="पुस्तके"
           onClick={() => navigate("/books")}
           path="/books"
           permission={permissions[role]?.includes("books")}
         />
-
         <MenuItem
           icon={Users}
-          text="Block Admins"
+          text="ब्लॉक प्रशासक"
           onClick={() => navigate("/block-admins")}
           path="/blockadmins"
           permission={permissions[role]?.includes("blockAdmins")}
         />
-
         <MenuItem
           icon={Users}
-          text="District Admins"
+          text="जिल्हा प्रशासक"
           onClick={() => navigate("/district-admins")}
-          path="/blockadmins"
+          path="/districtadmins"
           permission={permissions[role]?.includes("districtAdmins")}
         />
         <MenuItem
           icon={Users}
-          text="Gram sevaks"
+          text="ग्राम सेवक"
           onClick={() => navigate("/gram-sevaks")}
           path="/gramsevaks"
           permission={permissions[role]?.includes("gramSevaks")}
         />
         <MenuItem
           icon={Upload}
-          text="Upload"
+          text="अपलोड करा"
           onClick={() => navigate("/upload-books")}
           path="/uploadbooks"
           permission={permissions[role]?.includes("upload")}

@@ -21,7 +21,7 @@ function DocumentUpload() {
       if (response.status === "success") {
         setDocuments(response.data);
       } else {
-        toast.error("Unable to get documents");
+        toast.error("कागदपत्रे मिळवू शकत नाही");
       }
     })();
   }, []);
@@ -35,10 +35,10 @@ function DocumentUpload() {
     let response = await docUpload(formData);
 
     if (response.status === "success") {
-      toast.success("Saved successfully");
+      toast.success("यशस्वीरित्या जतन केले");
       navigate("/");
     } else {
-      toast.error("Unable to save documents , Please try again");
+      toast.error("कागदपत्रे जतन करता आली नाहीत, कृपया पुन्हा प्रयत्न करा");
     }
   };
 
@@ -54,10 +54,10 @@ function DocumentUpload() {
     <div className="min-h-screen flex items-center justify-start to-purple-100 ">
       <div className="w-full max-w-4xl p-8 space-y-6 ">
         <div>
-          <h1 className="text-2xl font-bold ">Document Upload</h1>
+          <h1 className="text-2xl font-bold ">कागदपत्रे अपलोड करा</h1>
           <p className="text-gray-600 mt-2">
-            Please upload the following documents. Fields marked with an
-            asterisk (*) are mandatory.
+            कृपया खालील कागदपत्रे अपलोड करा. तारांकन (*) असलेली क्षेत्रे
+            अनिवार्य आहेत.
           </p>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -80,7 +80,7 @@ function DocumentUpload() {
             </div>
           ))}
           <Button onClick={handleSubmit} className="w-full">
-            Upload Documents
+            कागदपत्रे अपलोड करा
           </Button>
         </form>
       </div>

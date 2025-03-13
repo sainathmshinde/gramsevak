@@ -1,5 +1,4 @@
 import WithLayout from "@/components/layout/WithLayout";
-
 import { useState } from "react";
 import { Search, Download } from "lucide-react";
 import WithAuthentication from "@/components/hoc/withAuthentication";
@@ -7,8 +6,7 @@ import WithPermission from "@/components/hoc/withPermissions";
 
 function MaterialCard({ material }) {
   const handleDownload = () => {
-    // Implement download logic here
-    console.log("Downloading:", material.title);
+    console.log("डाउनलोड करत आहे:", material.title);
   };
 
   return (
@@ -16,15 +14,13 @@ function MaterialCard({ material }) {
       <div>
         <h3 className="font-semibold">{material.title}</h3>
         <p className="text-sm text-gray-500 capitalize">
-          {material.type === "book"
-            ? "Official Document"
-            : "Government Resolution"}
+          {material.type === "book" ? "अधिकृत दस्तऐवज" : "शासन निर्णय"}
         </p>
       </div>
       <button
         onClick={handleDownload}
         className="text-blue-500 hover:text-blue-700 transition-colors"
-        aria-label={`Download ${material.title}`}
+        aria-label={`डाउनलोड करा ${material.title}`}
       >
         <Download size={20} />
       </button>
@@ -35,18 +31,18 @@ function MaterialCard({ material }) {
 function CategorySection({ category }) {
   const getCategoryDescription = (categoryName) => {
     switch (categoryName) {
-      case "General Administration":
-        return "Policies and regulations related to the overall governance of Maharashtra.";
-      case "Urban Development":
-        return "Guidelines and plans for the development of urban areas in Maharashtra.";
-      case "Rural Development":
-        return "Initiatives and schemes for the progress of rural Maharashtra.";
-      case "Education":
-        return "Policies and programs shaping the educational landscape of Maharashtra.";
-      case "Public Health":
-        return "Regulations and initiatives for maintaining public health in Maharashtra.";
+      case "सामान्य प्रशासन":
+        return "महाराष्ट्राच्या एकूण प्रशासकीय धोरणे आणि नियमावली.";
+      case "शहरी विकास":
+        return "महाराष्ट्रातील शहरी क्षेत्रांसाठी मार्गदर्शक तत्त्वे आणि योजना.";
+      case "ग्रामीण विकास":
+        return "महाराष्ट्रातील ग्रामीण विकासासाठी योजना आणि उपक्रम.";
+      case "शिक्षण":
+        return "महाराष्ट्रातील शैक्षणिक धोरणे आणि कार्यक्रम.";
+      case "सार्वजनिक आरोग्य":
+        return "महाराष्ट्रातील सार्वजनिक आरोग्य सुधारण्यासाठी नियम आणि उपक्रम.";
       default:
-        return "Important documents and resolutions for Maharashtra governance.";
+        return "महाराष्ट्र शासनासाठी महत्त्वाचे दस्तऐवज आणि शासन निर्णय.";
     }
   };
 
@@ -70,8 +66,7 @@ function SearchBar() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search logic here
-    console.log("Searching for:", query);
+    console.log("शोधत आहे:", query);
   };
 
   return (
@@ -79,7 +74,7 @@ function SearchBar() {
       <div className="relative">
         <input
           type="text"
-          placeholder="Search books and GRs..."
+          placeholder="पुस्तके आणि शासन निर्णय शोधा..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full px-4 py-3 pr-12 text-lg border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -97,46 +92,42 @@ function SearchBar() {
 
 const maharashtraGovCategories = [
   {
-    category: "General Administration",
+    category: "सामान्य प्रशासन",
     materials: [
-      { id: 1, title: "Maharashtra Civil Services Rules", type: "book" },
-      { id: 2, title: "GR: E-governance Implementation", type: "gr" },
+      { id: 1, title: "महाराष्ट्र नागरी सेवा नियम", type: "book" },
+      { id: 2, title: "शासन निर्णय: ई-शासन अंमलबजावणी", type: "gr" },
     ],
   },
   {
-    category: "Urban Development",
+    category: "शहरी विकास",
     materials: [
+      { id: 3, title: "महाराष्ट्र प्रादेशिक व नगररचना अधिनियम", type: "book" },
+      { id: 4, title: "शासन निर्णय: स्मार्ट सिटी मिशन महाराष्ट्र", type: "gr" },
+    ],
+  },
+  {
+    category: "ग्रामीण विकास",
+    materials: [
+      { id: 5, title: "महाराष्ट्र ग्रामपंचायत अधिनियम", type: "book" },
+      { id: 6, title: "शासन निर्णय: मनरेगा अंमलबजावणी महाराष्ट्र", type: "gr" },
+    ],
+  },
+  {
+    category: "शिक्षण",
+    materials: [
+      { id: 7, title: "महाराष्ट्र शैक्षणिक संस्था अधिनियम", type: "book" },
       {
-        id: 3,
-        title: "Maharashtra Regional and Town Planning Act",
-        type: "book",
+        id: 8,
+        title: "शासन निर्णय: मध्याह्न भोजन योजना अंमलबजावणी",
+        type: "gr",
       },
-      { id: 4, title: "GR: Smart Cities Mission in Maharashtra", type: "gr" },
     ],
   },
   {
-    category: "Rural Development",
+    category: "सार्वजनिक आरोग्य",
     materials: [
-      { id: 5, title: "Maharashtra Village Panchayats Act", type: "book" },
-      { id: 6, title: "GR: MGNREGA Implementation in Maharashtra", type: "gr" },
-    ],
-  },
-  {
-    category: "Education",
-    materials: [
-      {
-        id: 7,
-        title: "Maharashtra Educational Institutions Act",
-        type: "book",
-      },
-      { id: 8, title: "GR: Mid-Day Meal Scheme Implementation", type: "gr" },
-    ],
-  },
-  {
-    category: "Public Health",
-    materials: [
-      { id: 9, title: "Maharashtra Public Health Act", type: "book" },
-      { id: 10, title: "GR: COVID-19 Vaccination Drive", type: "gr" },
+      { id: 9, title: "महाराष्ट्र सार्वजनिक आरोग्य अधिनियम", type: "book" },
+      { id: 10, title: "शासन निर्णय: कोविड-१९ लसीकरण मोहीम", type: "gr" },
     ],
   },
 ];
@@ -145,7 +136,7 @@ function Books() {
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-center">
-        Maharashtra Government Books and GR Search
+        महाराष्ट्र शासन पुस्तके आणि शासन निर्णय शोध
       </h1>
       <SearchBar />
       <div className="mt-12 space-y-8">

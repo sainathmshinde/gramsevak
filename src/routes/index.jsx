@@ -5,6 +5,7 @@ import Dashboard from "@/pages/Dashboard";
 import DistrictAdmins from "@/pages/DistrictAdmins";
 import DocumentUpload from "@/pages/DocumentUpload";
 import GramSevaks from "@/pages/GramSevaks";
+import LandingPage from "@/pages/LandingPage";
 import Login from "@/pages/Login";
 import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
@@ -72,6 +73,11 @@ const routes = [
     exact: true,
     path: "/unauthorized",
     component: <UnauthorisedAccess />,
+  },
+  {
+    exact: true,
+    path: "/land",
+    component: <LandingPage />,
   },
 ];
 

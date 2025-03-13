@@ -17,7 +17,6 @@ import {
 } from "@/services/preset";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
 function Documents({ data }) {
   return (
     <Card>
@@ -50,65 +49,58 @@ function BasicDetails({ data, designations, districts, blocks, panchayats }) {
       <CardContent className="space-y-4 pt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="firstName">First Name</Label>
+            <Label htmlFor="firstName">पहिले नाव</Label>
             <Input
               id="firstName"
               name="firstName"
               value={data?.firstName}
-              // onChange={handleChange("firstName")}
               required
               lang="mr"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="lastName">Last Name</Label>
+            <Label htmlFor="lastName">आडनाव</Label>
             <Input
               id="lastName"
               name="lastName"
               value={data?.lastName}
-              // onChange={handleChange("lastName")}
               required
               lang="mr"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="designation">Designation</Label>
+            <Label htmlFor="designation">हुद्दा</Label>
             <RSelect
               id="designation"
               options={designations}
               nameProperty="designationName"
               valueProperty="designationId"
               value={data?.designation}
-              // onChange={handleChange("designation")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="currentZillaParishad">Current Zilla Parishad</Label>
+            <Label htmlFor="currentZillaParishad">सध्याची जिल्हा परिषद</Label>
             <RSelect
               id="ditrictName"
               options={districts}
               nameProperty="districtName"
               valueProperty="districtId"
               value={data?.district}
-              // onChange={handleChange("currentZillaParishad")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="currentPanchayatSamiti">
-              Current Panchayat Samiti
-            </Label>
+            <Label htmlFor="currentPanchayatSamiti">सध्याची पंचायत समिती</Label>
             <RSelect
               id="blocks"
               options={blocks}
               nameProperty="blockName"
               valueProperty="blockId"
               value={data?.block}
-              // onChange={handleChange("currentPanchayatSamiti")}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="currentGramPanchayatName">
-              Current Gram Panchayat Name
+              सध्याचे ग्रामपंचायत नाव
             </Label>
             <RSelect
               id="panchayat"
@@ -116,39 +108,37 @@ function BasicDetails({ data, designations, districts, blocks, panchayats }) {
               nameProperty="gramPanchayatName"
               valueProperty="gramPanchayatId"
               value={data?.gramPanchayat}
-              // onChange={handleChange("currentGramPanchayatName")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="mobileNumber">Mobile Number</Label>
+            <Label htmlFor="mobileNumber">मोबाईल क्रमांक</Label>
             <Input
               id="mobileNumber"
               name="mobileNumber"
               type="tel"
               value={data?.mobileNumber}
-              // onChange={handleChange("mobileNumber")}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="whatsappMobileNumber">WhatsApp Mobile Number</Label>
+            <Label htmlFor="whatsappMobileNumber">
+              व्हॉट्सअॅप मोबाईल क्रमांक
+            </Label>
             <Input
               id="whatsappMobileNumber"
               name="whatsappMobileNumber"
               type="tel"
               value={data?.whatsappNumber}
-              // onChange={handleChange("whatsappMobileNumber")}
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="emailId">Email ID</Label>
+            <Label htmlFor="emailId">ईमेल आयडी</Label>
             <Input
               id="emailId"
               name="emailId"
               type="email"
               value={data?.email}
-              // onChange={handleChange("emailId")}
               required
             />
           </div>
@@ -164,6 +154,7 @@ function Profile() {
   const [districts, setDistricts] = useState([]);
   const [blocks, setBlocks] = useState([]);
   const [panchayats, setPanchayats] = useState([]);
+
   useEffect(() => {
     (async () => {
       let res1 = await getDesignations();
@@ -173,19 +164,16 @@ function Profile() {
       setDistricts(res2?.data);
       let response = await getGramSevakById(1);
       if (response.status === "success") {
-        //get blocks
         let blockResponse = await getBlocksByDistrictId(
           response?.data?.district?.districtId
         );
-
         setBlocks(blockResponse?.data);
 
         let panchayatResponse = await getPanchayatByBlockId(
           response?.data?.gramPanchayat?.gramPanchayatId
         );
-
         setPanchayats(panchayatResponse?.data);
-        //get getpanchayats
+
         setGramSevak(response.data);
       } else {
         toast.error("Unable to get gramsevak details");
@@ -195,11 +183,11 @@ function Profile() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Profile</h1>
+      <h1 className="text-3xl font-bold mb-6">प्रोफाईल</h1>
       <Tabs defaultValue="basic-details" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="basic-details">Basic Details</TabsTrigger>
-          <TabsTrigger value="documents">Documents</TabsTrigger>
+          <TabsTrigger value="basic-details">मूलभूत माहिती</TabsTrigger>
+          <TabsTrigger value="documents">कागदपत्रे</TabsTrigger>
         </TabsList>
         <TabsContent value="basic-details">
           <BasicDetails

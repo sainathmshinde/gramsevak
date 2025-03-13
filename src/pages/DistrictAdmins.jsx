@@ -55,7 +55,7 @@ function DistrictAdmins() {
   const handleViewBlocks = (index) => (e) => {
     const districtId = districts[index]["districtId"];
 
-    //navigate to block management
+    //ब्लॉक व्यवस्थापन पृष्ठावर जा
     navigate(`/block-admins?districtId=${districtId}`);
   };
 
@@ -70,23 +70,23 @@ function DistrictAdmins() {
 
       setDistricts(nextState);
     } else {
-      toast.error("Unable to update district admin");
+      toast.error("जिल्हा प्रशासक अद्यतनित करू शकत नाही");
     }
   };
 
   return (
     <div>
       <div className="flex justify-between ">
-        <h1 className="text-2xl font-bold mb-5">District Management</h1>
+        <h1 className="text-2xl font-bold mb-5">जिल्हा व्यवस्थापन</h1>
       </div>
 
       <div className="border rounded-lg shadow-lg border-0">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="p-2">District Name</TableHead>
-              <TableHead className="p-2">District Admin</TableHead>
-              <TableHead className="w-[150px] p-2">Actions</TableHead>
+              <TableHead className="p-2">जिल्ह्याचे नाव</TableHead>
+              <TableHead className="p-2">जिल्हा प्रशासक</TableHead>
+              <TableHead className="w-[150px] p-2">क्रिया</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -131,7 +131,7 @@ function DistrictAdmins() {
             ) : (
               <TableRow>
                 <TableCell colSpan={7} className="h-24 text-center">
-                  No results.
+                  कोणतेही परिणाम नाहीत.
                 </TableCell>
               </TableRow>
             )}

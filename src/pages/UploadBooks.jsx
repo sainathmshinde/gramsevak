@@ -78,15 +78,11 @@ function UploadModal({ isOpen, onClose }) {
           break;
 
         case "file":
-          draft[name] = e;
+          draft[name] = e.target.files[0];
           break;
 
         case "department":
           draft[name] = e;
-          break;
-
-        case "file":
-          draft[name] = e.target.files[0];
           break;
 
         default:
@@ -98,8 +94,8 @@ function UploadModal({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!document?.document) {
-      toast.error("Please upload document");
+    if (!document?.file) {
+      toast.error("कृपया दस्तऐवज अपलोड करा");
       return;
     }
 
@@ -109,15 +105,14 @@ function UploadModal({ isOpen, onClose }) {
     formData.append("subject", document?.subject);
     formData.append("type", document?.type);
     formData.append("grNumber", document?.grNumber);
-    formData.append("grCode", document?.geCode);
+    formData.append("grCode", document?.grCode);
     formData.append("file", document?.file);
 
-    //make api call
     let response = await uploadGovernmentDoc(formData);
     if (response?.status === "success") {
-      toast.success("Uploaded succesfully");
+      toast.success("यशस्वीरित्या अपलोड केले");
     } else {
-      toast.error("Unable to upload document, Please try again");
+      toast.error("दस्तऐवज अपलोड करता आला नाही, कृपया पुन्हा प्रयत्न करा");
     }
   };
 
@@ -125,43 +120,44 @@ function UploadModal({ isOpen, onClose }) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Upload Document</DialogTitle>
+          <DialogTitle>दस्तऐवज अपलोड करा</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
+            <Label>दस्तऐवजाचा प्रकार</Label>
             <RadioGroup
               value={document?.type}
               onValueChange={handleChange("type")}
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="book" id="book" />
-                <Label htmlFor="book">Book</Label>
+                <Label htmlFor="book">पुस्तक</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="gr" id="gr" />
-                <Label htmlFor="gr">Government Resolution (GR)</Label>
+                <Label htmlFor="gr">शासकीय ठराव (GR)</Label>
               </div>
             </RadioGroup>
           </div>
 
           <div className="space-y-2">
-            <Label>Date</Label>
+            <Label>दिनांक</Label>
             <DatePicker onChange={handleChange("date")} />
           </div>
 
           <div className="space-y-2">
-            <Label>Department</Label>
+            <Label>विभाग</Label>
             <RSelect
               options={departments}
               nameProperty="departmentName"
               valueProperty="departmentId"
               onChange={handleChange("department")}
-              placeholder="Select Department"
+              placeholder="विभाग निवडा"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Subject</Label>
+            <Label>विषय</Label>
             <Input
               type="text"
               value={document.subject}
@@ -169,36 +165,32 @@ function UploadModal({ isOpen, onClose }) {
             />
           </div>
 
-          {document?.type === "gr" ? (
-            <div className="space-y-2">
-              <Label>GR Number</Label>
-              <Input
-                type="text"
-                value={document.grNumber}
-                onChange={handleChange("grNumber")}
-              />
-            </div>
-          ) : null}
+          {document?.type === "gr" && (
+            <>
+              <div className="space-y-2">
+                <Label>GR क्रमांक</Label>
+                <Input
+                  type="text"
+                  value={document.grNumber}
+                  onChange={handleChange("grNumber")}
+                />
+              </div>
 
-          {document?.type === "gr" ? (
-            <div className="space-y-2">
-              <Label>GR Code</Label>
-              <Input
-                type="text"
-                value={document.grCode}
-                onChange={handleChange("grCode")}
-              />
-            </div>
-          ) : null}
+              <div className="space-y-2">
+                <Label>GR कोड</Label>
+                <Input
+                  type="text"
+                  value={document.grCode}
+                  onChange={handleChange("grCode")}
+                />
+              </div>
+            </>
+          )}
           <div className="space-y-2">
-            <Label className="flex items-center">Document</Label>
-            <Input
-              onChange={handleChange("file")}
-              type="file"
-              className="file:mr-4 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-            />
+            <Label>दस्तऐवज अपलोड करा</Label>
+            <Input onChange={handleChange("file")} type="file" />
           </div>
-          <Button type="submit">Upload</Button>
+          <Button type="submit">अपलोड करा</Button>
         </form>
       </DialogContent>
     </Dialog>
@@ -217,7 +209,7 @@ function UploadBooks() {
       if (response.status === "success") {
         setDocuments(response.data);
       } else {
-        toast.error("Unable to get document, Please reload the page");
+        toast.error("कागदपत्र मिळवता आले नाही, कृपया पृष्ठ रीफ्रेश करा");
       }
     })();
   }, [filter, search]);
@@ -232,11 +224,11 @@ function UploadBooks() {
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold text-gray-900">
-              Government Documents
+              शासकीय कागदपत्रे
             </h1>
             <Button onClick={() => setIsModalOpen(true)}>
               <Upload className="mr-2 h-4 w-4" />
-              Upload Document
+              कागदपत्र अपलोड करा
             </Button>
           </div>
 
@@ -244,7 +236,7 @@ function UploadBooks() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
               <Input
-                placeholder="Search documents..."
+                placeholder="कागदपत्रे शोधा..."
                 className="pl-10"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -252,12 +244,12 @@ function UploadBooks() {
             </div>
             <Select value={filter} onValueChange={handleChangeFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by type" />
+                <SelectValue placeholder="प्रकारानुसार फिल्टर करा" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Documents</SelectItem>
-                <SelectItem value="book">Books</SelectItem>
-                <SelectItem value="gr">Government Resolutions</SelectItem>
+                <SelectItem value="all">सर्व कागदपत्रे</SelectItem>
+                <SelectItem value="book">पुस्तके</SelectItem>
+                <SelectItem value="gr">शासकीय ठराव</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -278,11 +270,11 @@ function UploadBooks() {
                 <CardContent>
                   <div className="flex flex-col gap-2 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">Type:</span>
+                      <span className="font-semibold">प्रकार:</span>
                       <span className="capitalize">{doc.type}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold">Department:</span>
+                      <span className="font-semibold">विभाग:</span>
                       <span className="capitalize">{doc.department}</span>
                     </div>
                   </div>
@@ -292,7 +284,7 @@ function UploadBooks() {
                     variant="link"
                     className="text-primary hover:text-primary/80"
                   >
-                    View Document
+                    कागदपत्र पहा
                   </Button>
                 </CardFooter>
               </Card>

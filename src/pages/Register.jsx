@@ -86,13 +86,13 @@ function Register() {
     });
     setFormData(nextState);
 
-    //get panchayat samiti
+    // पं. स. मिळवा
     if (name === "currentZillaParishad" && e) {
       let response = await getBlocksByDistrictId(e?.districtId);
       setBlocks(response?.data);
     }
 
-    //get gram panchayat
+    // ग्राम पंचायत मिळवा
     if (name === "currentPanchayatSamiti" && e) {
       let response = await getPanchayatByBlockId(e?.blockId);
       setPanchayats(response?.data);
@@ -105,9 +105,9 @@ function Register() {
     let response = await register(formData);
     if (response?.status === "success") {
       navigate("/login");
-      toast.success("Logged in successfully");
+      toast.success("नोंदणी यशस्वी झाली");
     } else {
-      toast.error("Unable to login, Please try again");
+      toast.error("नोंदणी करू शकत नाही, कृपया पुन्हा प्रयत्न करा");
     }
   };
 
@@ -115,15 +115,13 @@ function Register() {
     <div className="flex justify-center items-center min-h-screen ">
       <Card className="w-full max-w-2xl">
         <CardHeader>
-          <CardTitle>Registration Form</CardTitle>
-          <CardDescription>
-            Please fill in all the required information.
-          </CardDescription>
+          <CardTitle>नोंदणी फॉर्म</CardTitle>
+          <CardDescription>कृपया आवश्यक सर्व माहिती भरा.</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="firstName">पहिले नाव</Label>
               <Input
                 id="firstName"
                 name="firstName"
@@ -134,7 +132,7 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="lastName">आडनाव</Label>
               <Input
                 id="lastName"
                 name="lastName"
@@ -145,7 +143,7 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="designation">Designation</Label>
+              <Label htmlFor="designation">पदनाम</Label>
               <RSelect
                 id="designation"
                 options={designations}
@@ -156,9 +154,7 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="currentZillaParishad">
-                Current Zilla Parishad
-              </Label>
+              <Label htmlFor="currentZillaParishad">वर्तमान जिल्हा परिषद</Label>
               <RSelect
                 id="ditrictName"
                 options={districts}
@@ -170,7 +166,7 @@ function Register() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="currentPanchayatSamiti">
-                Current Panchayat Samiti
+                वर्तमान पंचायत समिती
               </Label>
               <RSelect
                 id="blocks"
@@ -183,7 +179,7 @@ function Register() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="currentGramPanchayatName">
-                Current Gram Panchayat Name
+                वर्तमान ग्राम पंचायत नाव
               </Label>
               <RSelect
                 id="panchayat"
@@ -195,7 +191,7 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="mobileNumber">Mobile Number</Label>
+              <Label htmlFor="mobileNumber">मोबाईल नंबर</Label>
               <Input
                 id="mobileNumber"
                 name="mobileNumber"
@@ -207,7 +203,7 @@ function Register() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="whatsappMobileNumber">
-                WhatsApp Mobile Number
+                व्हॉट्सअॅप मोबाईल नंबर
               </Label>
               <Input
                 id="whatsappMobileNumber"
@@ -219,7 +215,7 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="emailId">Email ID</Label>
+              <Label htmlFor="emailId">ई-मेल आयडी</Label>
               <Input
                 id="emailId"
                 name="emailId"
@@ -232,7 +228,7 @@ function Register() {
           </CardContent>
           <CardFooter>
             <Button onClick={handleSubmit} className="w-full">
-              Register
+              नोंदणी करा
             </Button>
           </CardFooter>
         </form>

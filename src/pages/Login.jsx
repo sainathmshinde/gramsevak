@@ -50,9 +50,9 @@ function Login() {
     let response = await sendOtp(loginDetails?.mobileNumber);
     if (response?.status === "success") {
       setOtpSent(true);
-      toast.success("OTP sent successfully!");
+      toast.success("OTP यशस्वीरित्या पाठवला गेला!");
     } else {
-      toast.error("Unable to send OTP, Please retry.");
+      toast.error("OTP पाठवता आला नाही, कृपया पुन्हा प्रयत्न करा.");
     }
   };
 
@@ -62,7 +62,7 @@ function Login() {
       updateUser(response?.data);
       navigate("/");
     } else {
-      console.log("error");
+      console.log("त्रुटी");
     }
   };
 
@@ -70,30 +70,30 @@ function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
+          <CardTitle>लॉगिन</CardTitle>
           <CardDescription>
-            Enter your mobile number and OTP to log in.
+            लॉगिन करण्यासाठी आपला मोबाइल क्रमांक आणि OTP प्रविष्ट करा.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="mobile">Mobile Number</Label>
+                <Label htmlFor="mobile">मोबाइल क्रमांक</Label>
                 <Input
                   id="mobile"
                   name="mobile"
-                  placeholder="Enter your mobile number"
+                  placeholder="आपला मोबाइल क्रमांक प्रविष्ट करा"
                   value={loginDetails?.mobileNumber}
                   onChange={handleChange("mobileNumber")}
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="otp">One-Time Password</Label>
+                <Label htmlFor="otp">वन-टाइम पासवर्ड</Label>
                 <Input
                   id="otp"
                   name="otp"
-                  placeholder="Enter OTP"
+                  placeholder="OTP प्रविष्ट करा"
                   disabled={!otpSent}
                   value={loginDetails?.otp}
                   onChange={handleChange("otp")}
@@ -104,7 +104,7 @@ function Login() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
           <Button className="w-full" onClick={handleSendOtp}>
-            Send OTP
+            OTP पाठवा
           </Button>
           <Button
             className="w-full"
@@ -112,7 +112,7 @@ function Login() {
             form="login-form"
             onClick={hadleLogin}
           >
-            Login
+            लॉगिन
           </Button>
         </CardFooter>
       </Card>

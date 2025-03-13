@@ -52,7 +52,7 @@ function GramSevakTable({ data, onEdit, onApprove }) {
     if (response?.status === "success") {
       setCurrentGramSevak(response?.data);
     } else {
-      toast.error("unable to get gramsevak details");
+      toast.error("ग्रामसेवकाची माहिती मिळू शकली नाही");
     }
   };
 
@@ -61,14 +61,14 @@ function GramSevakTable({ data, onEdit, onApprove }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>First Name</TableHead>
-            <TableHead>Last Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Block</TableHead>
-            <TableHead>District</TableHead>
-            <TableHead>Service ID</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>पहिले नाव</TableHead>
+            <TableHead>आडनाव</TableHead>
+            <TableHead>ई-मेल</TableHead>
+            <TableHead>ब्लॉक</TableHead>
+            <TableHead>जिल्हा</TableHead>
+            <TableHead>सेवा आयडी</TableHead>
+            <TableHead>स्थिती</TableHead>
+            <TableHead>क्रिया</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -81,7 +81,7 @@ function GramSevakTable({ data, onEdit, onApprove }) {
               <TableCell>{gramSevak.district}</TableCell>
               <TableCell>{gramSevak.serviceId}</TableCell>
               <TableCell>
-                {gramSevak.isApproved ? "Approved" : "Pending"}
+                {gramSevak.isApproved ? "मंजूर" : "प्रलंबित"}
               </TableCell>
               <TableCell>
                 <Button
@@ -111,46 +111,22 @@ function GramSevakTable({ data, onEdit, onApprove }) {
                   <DialogContent>
                     <Card>
                       <CardHeader>
-                        <CardTitle>User Information</CardTitle>
+                        <CardTitle>वापरकर्ता माहिती</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div>
-                          <h3 className="font-semibold">Personal Details</h3>
+                          <h3 className="font-semibold">वैयक्तिक तपशील</h3>
                           <p>
-                            Name: {currentGramSevak?.firstName}{" "}
+                            नाव: {currentGramSevak?.firstName}{" "}
                             {currentGramSevak?.lastName}
                           </p>
                           <p>
-                            Designation:{" "}
+                            पदनाम:{" "}
                             {currentGramSevak?.designation.designationName}
                           </p>
-                          <p>Mobile: {currentGramSevak?.mobileNumber}</p>
-                          <p>WhatsApp: {currentGramSevak?.whatsappNumber}</p>
-                          <p>Email: {currentGramSevak?.email}</p>
-                        </div>
-
-                        <div>
-                          <h3 className="font-semibold">Location</h3>
-                          <p>
-                            District: {currentGramSevak?.district.districtName}
-                          </p>
-                          <p>Block: {currentGramSevak?.block.blockName}</p>
-                          <p>
-                            Gram Panchayat:{" "}
-                            {currentGramSevak?.gramPanchayat.gramPanchayatName}
-                          </p>
-                        </div>
-
-                        <div>
-                          <h3 className="font-semibold">Documents</h3>
-                          <ul className="list-disc pl-5">
-                            {currentGramSevak?.documents.map((doc, index) => (
-                              <li key={index}>
-                                {doc.documentType}: {doc.documentName} (
-                                {doc.document})
-                              </li>
-                            ))}
-                          </ul>
+                          <p>मोबाईल: {currentGramSevak?.mobileNumber}</p>
+                          <p>व्हॉट्सअॅप: {currentGramSevak?.whatsappNumber}</p>
+                          <p>ई-मेल: {currentGramSevak?.email}</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -164,7 +140,6 @@ function GramSevakTable({ data, onEdit, onApprove }) {
     </div>
   );
 }
-
 function GramSevaks() {
   const [gramSevaks, setGramSevaks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -197,7 +172,7 @@ function GramSevaks() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-5">Gram Sevak Management</h1>
+      <h1 className="text-2xl font-bold mb-5">ग्रामसेवक व्यवस्थापन</h1>
       <div className="flex justify-between items-center mb-5">
         <div className="relative flex-1 mr-10">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
