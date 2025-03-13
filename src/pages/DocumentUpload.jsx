@@ -9,6 +9,7 @@ import { docUpload } from "@/services/gramsevak";
 import { getDocuments } from "@/services/upload";
 import { produce } from "immer";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function DocumentUpload() {
@@ -20,7 +21,7 @@ function DocumentUpload() {
       if (response.status === "success") {
         setDocuments(response.data);
       } else {
-        //toast
+        toast.error("Unable to get documents");
       }
     })();
   }, []);
@@ -34,10 +35,10 @@ function DocumentUpload() {
     let response = await docUpload(formData);
 
     if (response.status === "success") {
-      //toast
+      toast.success("Saved successfully");
       navigate("/");
     } else {
-      //toast
+      toast.error("Unable to save documents , Please try again");
     }
   };
 
@@ -74,7 +75,7 @@ function DocumentUpload() {
                 id={doc.documentTypeName}
                 type="file"
                 required={doc.mendatory}
-                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                className="file:mr-4 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
               />
             </div>
           ))}

@@ -70,11 +70,7 @@ function DistrictAdmins() {
 
       setDistricts(nextState);
     } else {
-      toast({
-        variant: "destructive",
-        title: "Something went wrong.",
-        description: "Unable to save product.",
-      });
+      toast.error("Unable to update district admin");
     }
   };
 

@@ -56,11 +56,7 @@ function BlockAdmins() {
 
       setBlocks(nextState);
     } else {
-      toast({
-        variant: "destructive",
-        title: "Something went wrong.",
-        description: "Unable to save product.",
-      });
+      toast.error("Unable to update block admin");
     }
   };
 

@@ -7,6 +7,22 @@ import { useDateStore, usePermissionStore, userStore } from "./lib/store";
 import { getYears, months } from "./lib/data";
 import { formatMonths, formatYears } from "./lib/helperFunctions";
 import { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+
+// const resources = {
+//   mr: { translation: { greeting: "नमस्कार! तुमचं स्वागत आहे" } },
+// };
+
+// function App() {
+//   const { t, i18n } = useTranslation();
+
+//   return (
+//     <div>
+//       <button onClick={() => i18n.changeLanguage("mr")}>मराठी</button>
+//       <p>{t("greeting")}</p>
+//     </div>
+//   );
+// }
 
 function App() {
   const setPermissions = usePermissionStore((state) => state.setPermissions);

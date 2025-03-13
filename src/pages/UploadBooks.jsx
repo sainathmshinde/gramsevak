@@ -32,41 +32,11 @@ import { getDepartments } from "@/services/preset";
 import DatePicker from "@/components/ui/datePicker";
 import WithAuthentication from "@/components/hoc/withAuthentication";
 import WithPermission from "@/components/hoc/withPermissions";
-
-export async function uploadDocument(formData) {
-  const file = formData.get("file");
-  const documentType = formData.get("documentType");
-  const department = formData.get("department");
-  const name = formData.get("name");
-
-  if (!file || !documentType || !department || !name) {
-    throw new Error("Missing required fields");
-  }
-
-  // Here you would typically save the document metadata to your database
-  // For this example, we'll just log it
-  console.log({
-    type: documentType,
-    department,
-    name,
-    url: blob.url,
-  });
-}
-
-export async function getDocuments(search) {
-  // In a real application, you would fetch this data from your database
-  // For this example, we'll return mock data
-
-  if (search) {
-    return mockDocuments.filter(
-      (doc) =>
-        doc.name.toLowerCase().includes(search.toLowerCase()) ||
-        doc.department.toLowerCase().includes(search.toLowerCase())
-    );
-  }
-
-  return mockDocuments;
-}
+import {
+  getUploadedDocuments,
+  uploadGovernmentDoc,
+} from "@/services/governmentDoc";
+import toast from "react-hot-toast";
 
 function UploadModal({ isOpen, onClose }) {
   const [departments, setDepartments] = useState([]);
@@ -115,6 +85,10 @@ function UploadModal({ isOpen, onClose }) {
           draft[name] = e;
           break;
 
+        case "file":
+          draft[name] = e.target.files[0];
+          break;
+
         default:
           break;
       }
@@ -124,24 +98,26 @@ function UploadModal({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) return;
+    if (!document?.document) {
+      toast.error("Please upload document");
+      return;
+    }
 
     const formData = new FormData();
-    formData.append("documentType", documentType);
-    formData.append("department", department);
-    formData.append("name", name);
-    formData.append("file", file);
+    formData.append("date", document?.date);
+    formData.append("departmentId", document?.department?.departmentId);
+    formData.append("subject", document?.subject);
+    formData.append("type", document?.type);
+    formData.append("grNumber", document?.grNumber);
+    formData.append("grCode", document?.geCode);
+    formData.append("file", document?.file);
 
-    try {
-      await uploadDocument(formData);
-      onClose();
-      // Reset form
-      setDocumentType("book");
-      setDepartment("");
-      setName("");
-      setFile(null);
-    } catch (error) {
-      console.error("Error uploading document:", error);
+    //make api call
+    let response = await uploadGovernmentDoc(formData);
+    if (response?.status === "success") {
+      toast.success("Uploaded succesfully");
+    } else {
+      toast.error("Unable to upload document, Please try again");
     }
   };
 
@@ -214,6 +190,14 @@ function UploadModal({ isOpen, onClose }) {
               />
             </div>
           ) : null}
+          <div className="space-y-2">
+            <Label className="flex items-center">Document</Label>
+            <Input
+              onChange={handleChange("file")}
+              type="file"
+              className="file:mr-4 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+            />
+          </div>
           <Button type="submit">Upload</Button>
         </form>
       </DialogContent>
@@ -221,111 +205,26 @@ function UploadModal({ isOpen, onClose }) {
   );
 }
 
-const documents = [
-  {
-    documentName: "Policy Guidelines",
-    type: "Book",
-    documentLink: "https://example.com/policy-guidelines",
-    grNumber: "",
-    grCode: "",
-    department: "Education",
-    date: "2024-02-16",
-  },
-  {
-    documentName: "Annual Report 2023",
-    type: "Book",
-    documentLink: "https://example.com/annual-report-2023",
-    grNumber: "",
-    grCode: "",
-    department: "Finance",
-    date: "2024-01-10",
-  },
-  {
-    documentName: "Health Regulations",
-    type: "GR",
-    documentLink: "https://example.com/health-regulations",
-    grNumber: "GR-2024-001",
-    grCode: "HR001",
-    department: "Health",
-    date: "2024-02-12",
-  },
-  {
-    documentName: "Infrastructure Development Plan",
-    type: "GR",
-    documentLink: "https://example.com/infrastructure-plan",
-    grNumber: "GR-2024-002",
-    grCode: "INFRA002",
-    department: "Public Works",
-    date: "2024-02-14",
-  },
-  {
-    documentName: "Agricultural Subsidies Policy",
-    type: "GR",
-    documentLink: "https://example.com/agriculture-subsidies",
-    grNumber: "GR-2024-003",
-    grCode: "AGRI003",
-    department: "Agriculture",
-    date: "2024-02-15",
-  },
-  {
-    documentName: "Technology Innovation Report",
-    type: "Book",
-    documentLink: "https://example.com/tech-innovation",
-    grNumber: "",
-    grCode: "",
-    department: "Technology",
-    date: "2024-01-25",
-  },
-  {
-    documentName: "Environmental Protection Act",
-    type: "GR",
-    documentLink: "https://example.com/environment-act",
-    grNumber: "GR-2024-004",
-    grCode: "ENV004",
-    department: "Environment",
-    date: "2024-02-10",
-  },
-  {
-    documentName: "Civic Planning Handbook",
-    type: "Book",
-    documentLink: "https://example.com/civic-planning",
-    grNumber: "",
-    grCode: "",
-    department: "Urban Development",
-    date: "2024-02-05",
-  },
-  {
-    documentName: "Education Reform Strategy",
-    type: "GR",
-    documentLink: "https://example.com/education-reform",
-    grNumber: "GR-2024-005",
-    grCode: "EDU005",
-    department: "Education",
-    date: "2024-02-08",
-  },
-  {
-    documentName: "Economic Growth Analysis",
-    type: "Book",
-    documentLink: "https://example.com/economic-growth",
-    grNumber: "",
-    grCode: "",
-    department: "Finance",
-    date: "2024-01-20",
-  },
-];
-
 function UploadBooks() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [documents, setDocuments] = useState([]);
 
-  const filteredDocuments = documents.filter((doc) => {
-    const matchesFilter = filter === "all" || doc.type === filter;
-    const matchesSearch =
-      doc.documentName.toLowerCase().includes(search.toLowerCase()) ||
-      doc.department.toLowerCase().includes(search.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  useEffect(() => {
+    (async () => {
+      let response = await getUploadedDocuments(filter, search);
+      if (response.status === "success") {
+        setDocuments(response.data);
+      } else {
+        toast.error("Unable to get document, Please reload the page");
+      }
+    })();
+  }, [filter, search]);
+
+  const handleChangeFilter = (value) => {
+    setFilter(value);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -351,7 +250,7 @@ function UploadBooks() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <Select value={filter} onValueChange={(value) => setFilter(value)}>
+            <Select value={filter} onValueChange={handleChangeFilter}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
@@ -364,7 +263,7 @@ function UploadBooks() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredDocuments.map((doc, index) => (
+            {documents.map((doc, index) => (
               <Card key={index} className="transition-shadow hover:shadow-lg">
                 <CardHeader>
                   <CardTitle className="flex items-start gap-2">

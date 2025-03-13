@@ -2,6 +2,8 @@ import WithLayout from "@/components/layout/WithLayout";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import WithAuthentication from "@/components/hoc/withAuthentication";
+import WithPermission from "@/components/hoc/withPermissions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,9 +16,7 @@ import {
   getPanchayatByBlockId,
 } from "@/services/preset";
 import { useEffect, useState } from "react";
-import { produce } from "immer";
-import WithAuthentication from "@/components/hoc/withAuthentication";
-import WithPermission from "@/components/hoc/withPermissions";
+import toast from "react-hot-toast";
 
 function Documents({ data }) {
   return (

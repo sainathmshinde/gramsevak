@@ -20,6 +20,7 @@ import {
 } from "@/services/preset";
 import { produce } from "immer";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
@@ -104,12 +105,11 @@ function Register() {
     let response = await register(formData);
     if (response?.status === "success") {
       navigate("/login");
+      toast.success("Logged in successfully");
     } else {
-      console.log("error");
+      toast.error("Unable to login, Please try again");
     }
   };
-
-  console.log(formData);
 
   return (
     <div className="flex justify-center items-center min-h-screen ">

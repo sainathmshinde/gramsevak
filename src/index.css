@@ -91,3 +91,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+body {
+  font-family: "Noto Sans Devanagari", sans-serif;
+}

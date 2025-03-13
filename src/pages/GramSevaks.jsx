@@ -13,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toast } from "@/hooks/use-toast";
 import {
   changeStatus,
   getGramSevakById,
@@ -22,6 +21,7 @@ import {
 import { CheckIcon, CrossIcon, EyeIcon, Search } from "lucide-react";
 import WithAuthentication from "@/components/hoc/withAuthentication";
 import WithPermission from "@/components/hoc/withPermissions";
+import toast from "react-hot-toast";
 
 function GramSevakTable({ data, onEdit, onApprove }) {
   const [editingGramSevak, setEditingGramSevak] = useState(null);
@@ -191,7 +191,7 @@ function GramSevaks() {
     if (response.status === "success") {
       setStatusValue({ id: 1, name: "All" });
     } else {
-      //toast
+      toast.error("Unable to update, Please try again.");
     }
   };
 
