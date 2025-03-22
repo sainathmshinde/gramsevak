@@ -1,3 +1,4 @@
+import { userDesignations } from "@/common/constants";
 import WithAuthLayout from "@/components/layout/WithAuthLayout";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,10 +44,9 @@ function Register() {
 
   useEffect(() => {
     (async () => {
-      let res1 = await getDesignations();
       let res2 = await getDistricts();
 
-      setDesignations(res1?.data);
+      setDesignations(userDesignations);
       setDistricts(res2?.data);
     })();
   }, []);

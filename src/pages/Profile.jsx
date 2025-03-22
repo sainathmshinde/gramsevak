@@ -17,6 +17,7 @@ import {
 } from "@/services/preset";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { userDesignations } from "@/common/constants";
 function Documents({ data }) {
   return (
     <Card>
@@ -157,10 +158,9 @@ function Profile() {
 
   useEffect(() => {
     (async () => {
-      let res1 = await getDesignations();
       let res2 = await getDistricts();
 
-      setDesignations(res1?.data);
+      setDesignations(userDesignations);
       setDistricts(res2?.data);
       let response = await getGramSevakById(1);
       if (response.status === "success") {
