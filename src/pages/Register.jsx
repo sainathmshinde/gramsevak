@@ -187,8 +187,8 @@ function Register() {
               <RSelect
                 id="panchayat"
                 options={panchayats}
-                nameProperty="panchayatName"
-                valueProperty="panchayatId"
+                nameProperty="gramPanchayatName"
+                valueProperty="gramPanchayatId"
                 value={formData.currentGramPanchayatName}
                 onChange={handleChange("currentGramPanchayatName")}
               />
