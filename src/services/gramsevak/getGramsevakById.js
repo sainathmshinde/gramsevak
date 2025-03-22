@@ -3,7 +3,7 @@ import { handleApiError, httpClient, Result } from "@/utils";
 const getGramSevakById = async (id) => {
   try {
     const response = await httpClient.get(
-      `/gramsevak/getgramsevakById?id=${id}`
+      `/gramsevak/getGramsevakById?id=${id}`
     );
     const { data } = response;
     return Result.success(data);

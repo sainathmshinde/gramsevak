@@ -2,66 +2,66 @@ import axios from "axios";
 
 const axiosInstance = () => {
   const instance = axios.create({
-    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/v1`,
   });
 
-  // // Add no-cache headers and cache-busting interceptors
-  // instance.interceptors.request.use(async function (config) {
-  //   // Add no-cache headers
-  //   config.headers = {
-  //     ...config.headers,
-  //     "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-  //     Pragma: "no-cache",
-  //     Expires: "0",
-  //   };
+   // Add no-cache headers and cache-busting interceptors
+   instance.interceptors.request.use(async function (config) {
+     // Add no-cache headers
+     config.headers = {
+       ...config.headers,
+       "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+       Pragma: "no-cache",
+       Expires: "0",
+     };
 
-  //   // Add cache-busting timestamp
-  //   config.params = {
-  //     ...config.params,
-  //     _: Date.now(), // Unique timestamp to prevent caching
-  //   };
+     // Add cache-busting timestamp
+     config.params = {
+       ...config.params,
+       _: Date.now(), // Unique timestamp to prevent caching
+     };
 
-  //   // Existing token and user state logic
-  //   let userState = getUserState();
+     // Existing token and user state logic
+     let userState = getUserState();
 
-  //   if (userState?.state?.user !== null) {
-  //     // Check if token is expired and needs refresh
-  //     if (userState && isTokenExpired(userState.state.user.expiresAt)) {
-  //       try {
-  //         // Refresh token
-  //         const newUserData = await refreshToken(
-  //           userState.state.user.refreshToken
-  //         );
+     if (userState?.state?.user !== null) {
+       // Check if token is expired and needs refresh
+       if (userState && isTokenExpired(userState.state.user.expiresAt)) {
+         try {
+           // Refresh token
+           const newUserData = await refreshToken(
+             userState.state.user.refreshToken
+           );
 
-  //         // Update user state in localStorage
-  //         userState.state.user = {
-  //           ...userState.state.user,
-  //           token: newUserData.token,
-  //           refreshToken: newUserData.refreshToken,
-  //           expiresAt: newUserData.expiresAt,
-  //           createdAt: new Date().toISOString(),
-  //         };
+           // Update user state in localStorage
+           userState.state.user = {
+             ...userState.state.user,
+             token: newUserData.token,
+             refreshToken: newUserData.refreshToken,
+             expiresAt: newUserData.expiresAt,
+             createdAt: new Date().toISOString(),
+           };
 
-  //         saveUserState(userState);
-  //       } catch (error) {
-  //         // If refresh fails, user will be redirected to login
-  //         return Promise.reject(error);
-  //       }
-  //     }
-  //   }
+           saveUserState(userState);
+         } catch (error) {
+           // If refresh fails, user will be redirected to login
+           return Promise.reject(error);
+         }
+       }
+     }
 
-  //   // Re-fetch user state after potential refresh
-  //   userState = getUserState();
-  //   const token = userState?.state?.user?.token || "";
+     // Re-fetch user state after potential refresh
+     userState = getUserState();
+     const token = userState?.state?.user?.accessToken || "";
 
-  //   // Add token to headers if exists
-  //   config.headers = {
-  //     ...config.headers,
-  //     ...(token?.length ? { Authorization: `Bearer ${token}` } : {}),
-  //   };
+     // Add token to headers if exists
+     config.headers = {
+       ...config.headers,
+       ...(token?.length ? { Authorization: `Bearer ${token}` } : {}),
+     };
 
-  //   return config;
-  // });
+     return config;
+   });
 
   // // Response interceptor
   // instance.interceptors.response.use(
