@@ -1422,3 +1422,17 @@ export const getChildPremium = (products) => {
   });
   return childPremium;
 };
+
+export const getRegistrationPayload = (register) => {
+  return {
+    firstName: register?.firstName,
+    lastName: register?.lastName,
+    designation: register?.designation?.designationName,
+    districtId: register?.currentZillaParishad?.districtId,
+    blockId: register?.currentPanchayatSamiti?.blockId,
+    gramPanchayatId: register?.currentGramPanchayatName?.gramPanchayatId,
+    mobileNumber: register?.mobileNumber,
+    whatsappNumber: register?.whatsappMobileNumber,
+    email: register?.emailId,
+  };
+};

@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import RSelect from "@/components/ui/RSelect";
+import { getRegistrationPayload } from "@/lib/helperFunctions";
 import { register } from "@/services/auth";
 import {
   getBlocksByDistrictId,
@@ -102,7 +103,9 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let response = await register(formData);
+    let payload = getRegistrationPayload(formData);
+
+    let response = await register(payload);
     if (response?.status === "success") {
       navigate("/login");
       toast.success("नोंदणी यशस्वी झाली");
