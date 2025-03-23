@@ -124,7 +124,9 @@ function Register() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">पहिले नाव</Label>
+              <Label htmlFor="firstName">
+                पहिले नाव <span className="text-red-500 ml-1">*</span>
+              </Label>
               <Input
                 id="firstName"
                 name="firstName"
@@ -135,7 +137,9 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">आडनाव</Label>
+              <Label htmlFor="lastName">
+                आडनाव <span className="text-red-500 ml-1">*</span>
+              </Label>
               <Input
                 id="lastName"
                 name="lastName"
@@ -146,22 +150,29 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="designation">पदनाम</Label>
+              <Label htmlFor="designation">
+                पदनाम <span className="text-red-500 ml-1">*</span>
+              </Label>
               <RSelect
                 id="designation"
                 options={designations}
                 nameProperty="designationName"
+                required
                 valueProperty="designationId"
                 value={formData.designation}
                 onChange={handleChange("designation")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="currentZillaParishad">वर्तमान जिल्हा परिषद</Label>
+              <Label htmlFor="currentZillaParishad">
+                वर्तमान जिल्हा परिषद{" "}
+                <span className="text-red-500 ml-1">*</span>
+              </Label>
               <RSelect
                 id="ditrictName"
                 options={districts}
                 nameProperty="districtName"
+                required
                 valueProperty="districtId"
                 value={formData.currentZillaParishad}
                 onChange={handleChange("currentZillaParishad")}
@@ -169,11 +180,13 @@ function Register() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="currentPanchayatSamiti">
-                वर्तमान पंचायत समिती
+                वर्तमान पंचायत समिती{" "}
+                <span className="text-red-500 ml-1">*</span>
               </Label>
               <RSelect
                 id="blocks"
                 options={blocks}
+                required
                 nameProperty="blockName"
                 valueProperty="blockId"
                 value={formData.currentPanchayatSamiti}
@@ -182,11 +195,13 @@ function Register() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="currentGramPanchayatName">
-                वर्तमान ग्राम पंचायत नाव
+                वर्तमान ग्राम पंचायत नाव{" "}
+                <span className="text-red-500 ml-1">*</span>
               </Label>
               <RSelect
                 id="panchayat"
                 options={panchayats}
+                required
                 nameProperty="gramPanchayatName"
                 valueProperty="gramPanchayatId"
                 value={formData.currentGramPanchayatName}
@@ -194,43 +209,49 @@ function Register() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="mobileNumber">मोबाईल नंबर</Label>
+              <Label htmlFor="mobileNumber">
+                मोबाईल नंबर <span className="text-red-500 ml-1">*</span>
+              </Label>
               <Input
                 id="mobileNumber"
                 name="mobileNumber"
                 type="tel"
+                required
                 value={formData.mobileNumber}
                 onChange={handleChange("mobileNumber")}
-                required
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="whatsappMobileNumber">
+                {" "}
                 व्हॉट्सअॅप मोबाईल नंबर
+                <span className="text-red-500 ml-1">*</span>
               </Label>
               <Input
                 id="whatsappMobileNumber"
                 name="whatsappMobileNumber"
                 type="tel"
+                required
                 value={formData.whatsappMobileNumber}
                 onChange={handleChange("whatsappMobileNumber")}
-                required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="emailId">ई-मेल आयडी</Label>
+              <Label htmlFor="emailId">
+                ई-मेल आयडी <span className="text-red-500 ml-1">*</span>
+              </Label>
               <Input
                 id="emailId"
                 name="emailId"
                 type="email"
+                required
                 value={formData.emailId}
                 onChange={handleChange("emailId")}
-                required
               />
             </div>
           </CardContent>
           <CardFooter>
-            <Button onClick={handleSubmit} className="w-full">
+            <Button type="submit" className="w-full">
               नोंदणी करा
             </Button>
           </CardFooter>
