@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,44 +25,55 @@ function Login() {
     otp: "",
   });
 
+  const [timer, setTimer] = useState(0); // Timer state
   const updateUser = userStore((state) => state.updateUser);
+
+  // Timer countdown effect
+  useEffect(() => {
+    let countdown;
+    if (timer > 0) {
+      countdown = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(countdown);
+  }, [timer]);
 
   const handleChange = (name) => (e) => {
     const nextState = produce(loginDetails, (draft) => {
-      switch (name) {
-        case "mobileNumber":
-          draft[name] = e.target.value;
-          break;
-
-        case "otp":
-          draft[name] = e.target.value;
-          break;
-
-        default:
-          break;
-      }
+      draft[name] = e.target.value;
     });
-
     setLoginDetails(nextState);
   };
 
   const handleSendOtp = async () => {
+    if (!loginDetails?.mobileNumber) {
+      toast.error("कृपया मोबाइल क्रमांक प्रविष्ट करा");
+      return;
+    }
+
     let response = await sendOtp(loginDetails?.mobileNumber);
     if (response?.status === "success") {
       setOtpSent(true);
+      setTimer(30); // Start 30-second timer
       toast.success("OTP यशस्वीरित्या पाठवला गेला!");
     } else {
       toast.error("OTP पाठवता आला नाही, कृपया पुन्हा प्रयत्न करा.");
     }
   };
 
-  const hadleLogin = async () => {
+  const handleLogin = async () => {
+    if (!loginDetails.otp) {
+      toast.error("कृपया OTP प्रविष्ट करा");
+      return;
+    }
+
     let response = await login(loginDetails);
     if (response?.status === "success") {
       updateUser(response?.data);
       navigate("/");
     } else {
-      console.log("त्रुटी");
+      toast.error("लॉगिन अयशस्वी, कृपया तपासा");
     }
   };
 
@@ -103,15 +114,14 @@ function Login() {
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
-          <Button className="w-full" onClick={handleSendOtp}>
-            OTP पाठवा
-          </Button>
           <Button
             className="w-full"
-            type="submit"
-            form="login-form"
-            onClick={hadleLogin}
+            onClick={handleSendOtp}
+            disabled={timer > 0}
           >
+            {timer > 0 ? `OTP पुन्हा पाठवा (${timer} सेकंद)` : "OTP पाठवा"}
+          </Button>
+          <Button className="w-full" type="button" onClick={handleLogin}>
             लॉगिन
           </Button>
         </CardFooter>

@@ -4,7 +4,7 @@ import { Search, Download } from "lucide-react";
 import WithAuthentication from "@/components/hoc/withAuthentication";
 import WithPermission from "@/components/hoc/withPermissions";
 
-function MaterialCard({ material }) {
+export function MaterialCard({ material }) {
   const handleDownload = () => {
     console.log("डाउनलोड करत आहे:", material.title);
   };
@@ -28,7 +28,7 @@ function MaterialCard({ material }) {
   );
 }
 
-function CategorySection({ category }) {
+export function CategorySection({ category }) {
   const getCategoryDescription = (categoryName) => {
     switch (categoryName) {
       case "सामान्य प्रशासन":
@@ -48,7 +48,7 @@ function CategorySection({ category }) {
 
   return (
     <section>
-      <h2 className="text-2xl font-semibold mb-2">{category.category}</h2>
+      <h2 className="text-2xl font-semibold my-5">{category.category}</h2>
       <p className="text-gray-600 mb-4">
         {getCategoryDescription(category.category)}
       </p>
@@ -61,7 +61,7 @@ function CategorySection({ category }) {
   );
 }
 
-function SearchBar() {
+export function SearchBar() {
   const [query, setQuery] = useState("");
 
   const handleSearch = (e) => {
@@ -90,7 +90,7 @@ function SearchBar() {
   );
 }
 
-const maharashtraGovCategories = [
+export const maharashtraGovCategories = [
   {
     category: "सामान्य प्रशासन",
     materials: [

@@ -1,5 +1,7 @@
+import { Button } from "@/components/ui/button";
 import ResolutionCard from "@/components/ui/ResolutionCard";
 import { ChevronRight, Globe, Menu, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 // import Image from "next/image";
 
 function HeroBanner() {
@@ -38,6 +40,7 @@ function HeroBanner() {
 }
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-sky-50">
       {/* शीर्षलेख */}
@@ -52,48 +55,28 @@ export default function LandingPage() {
                 <p className="text-sm text-slate-600">अधिकृत दस्तऐवज संग्रह</p>
               </div>
             </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="relative hidden md:block">
-                <input
-                  type="text"
-                  placeholder="ठराव शोधा..."
-                  className="w-64 rounded-md border border-slate-300 py-2 pl-3 pr-10 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
-                />
-              </div>
-
-              <button className="rounded-md bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 md:hidden">
-                <Menu className="h-5 w-5" />
-              </button>
+            <div>
+              <Button
+                className="mr-5"
+                onClick={() => {
+                  navigate("/register");
+                }}
+              >
+                नोंदणी करा
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                प्रवेश करा / लॉगिन करा
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
       {/* मार्गदर्शक पट्टी */}
-      <nav className="bg-slate-800 text-white">
-        <div className="container mx-auto px-4">
-          <ul className="hidden md:flex">
-            {[
-              "मुख्यपृष्ठ",
-              "ठराव",
-              "विभाग",
-              "परिपत्रके",
-              "डाउनलोड्स",
-              "संपर्क",
-            ].map((item) => (
-              <li key={item}>
-                <a
-                  href="#"
-                  className="inline-block px-4 py-3 text-sm font-medium hover:bg-slate-700"
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
 
       <HeroBanner />
 

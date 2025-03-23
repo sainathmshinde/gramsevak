@@ -53,7 +53,7 @@ export default function HeadLayout({ children }) {
         {/* Main Content */}
         <main className="flex-1 ">
           {/* Desktop Header */}
-          <header className="hidden md:flex h-14 items-center justify-end border-b bg-white px-4">
+          <header className="hidden md:flex h-14 items-center justify-end border-b bg-slate-800 text-white px-4">
             <div className="flex items-center gap-4">
               {user?.firstName && (
                 <span className="font-medium">Hello, {user.firstName}</span>
@@ -61,7 +61,7 @@ export default function HeadLayout({ children }) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
-                    <CircleUser className="h-6 w-6 text-[#8B0000]" />
+                    <CircleUser className="h-6 w-6 text-white hover:text-white" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">

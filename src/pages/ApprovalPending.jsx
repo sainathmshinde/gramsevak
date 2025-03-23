@@ -20,7 +20,7 @@ function ApprovalPending() {
   const handleLogout = () => {
     sessionStorage.clear();
     removeUser();
-    navigate("/login");
+    navigate("/land");
   };
   return (
     <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
