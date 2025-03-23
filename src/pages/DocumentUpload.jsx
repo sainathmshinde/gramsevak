@@ -89,5 +89,5 @@ function DocumentUpload() {
 }
 
 export default WithAuthentication(
-  WithPermission("upload")(WithLayout(DocumentUpload))
+  WithPermission("uploaddocs")(WithLayout(DocumentUpload))
 );

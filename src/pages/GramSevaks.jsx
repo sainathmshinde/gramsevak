@@ -38,7 +38,7 @@ function GramSevakTable({ data, onEdit, onApprove }) {
   const handleApprove = (index, status) => async (e) => {
     let gramSevak = data[index];
     let payload = {
-      gramSevakId: gramSevak.id,
+      gramsevakId: gramSevak.id,
       status: status,
     };
 
@@ -72,7 +72,7 @@ function GramSevakTable({ data, onEdit, onApprove }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((gramSevak, index) => (
+          {data?.map((gramSevak, index) => (
             <TableRow key={gramSevak.id}>
               <TableCell>{gramSevak.firstName}</TableCell>
               <TableCell>{gramSevak.lastName}</TableCell>
@@ -87,14 +87,14 @@ function GramSevakTable({ data, onEdit, onApprove }) {
                 <Button
                   variant="outline"
                   className="mr-2"
-                  onClick={handleApprove(index, "Approved")}
+                  onClick={handleApprove(index, "APPROVED")}
                 >
                   <CheckIcon />
                 </Button>
 
                 <Button
                   variant="outline"
-                  onClick={handleApprove(index, "Rejected")}
+                  onClick={handleApprove(index, "REJECTED")}
                 >
                   <CrossIcon />
                 </Button>
@@ -144,12 +144,12 @@ function GramSevaks() {
   const [gramSevaks, setGramSevaks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusOptions, setStatusOptions] = useState([
-    { id: 1, name: "All" },
-    { id: 2, name: "Approved" },
-    { id: 3, name: "Pending Approval" },
-    { id: 4, name: "Rejected" },
+    { id: 1, name: "ALL" },
+    { id: 2, name: "APPROVED" },
+    { id: 3, name: "PENDING" },
+    { id: 4, name: "REJECTED" },
   ]);
-  const [statusValue, setStatusValue] = useState({ id: 1, name: "All" });
+  const [statusValue, setStatusValue] = useState({ id: 1, name: "ALL" });
 
   useEffect(() => {
     (async () => {
@@ -164,7 +164,7 @@ function GramSevaks() {
   const handleApprove = async (payload) => {
     let response = await changeStatus(payload);
     if (response.status === "success") {
-      setStatusValue({ id: 1, name: "All" });
+      setStatusValue({ id: 1, name: "ALL" });
     } else {
       toast.error("Unable to update, Please try again.");
     }

@@ -2,7 +2,7 @@ import { handleApiError, httpClient, Result } from "../../utils";
 
 const changeStatus = async (payload) => {
   try {
-    const response = await httpClient.post(`/gramsevak/changestatus`, payload);
+    const response = await httpClient.patch(`/gramsevak/changeStatus`, payload);
     const { data } = response;
     return Result.success(data);
   } catch (e) {

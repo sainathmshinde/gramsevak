@@ -3,7 +3,7 @@ import { handleApiError, httpClient, Result } from "@/utils";
 const getgramsevakList = async (searchTerm, statusName) => {
   try {
     const response = await httpClient.get(
-      `/gramsevak/getgramsevaklist?serachTerm=${searchTerm}&status=${statusName}`
+      `/gramsevak/getGramsevakList?serachTerm=${searchTerm}&status=${statusName}`
     );
     const { data } = response;
     return Result.success(data);

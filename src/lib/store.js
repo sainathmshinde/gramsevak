@@ -26,7 +26,6 @@ export const usePermissionStore = create((set) => ({
   permissions: {
     superAdmin: [
       "home",
-      "profile",
       "books",
       "districtAdmins",
       "blockAdmins",
@@ -35,7 +34,7 @@ export const usePermissionStore = create((set) => ({
     ],
     districtAdmin: ["home", "profile", "blockAdmins", "gramSevaks"],
     blockAdmin: ["home", "profile", "gramSevaks", "upload"],
-    gramSevak: ["home", "profile", "books"],
+    gramSevak: ["home", "profile", "books",  "uploaddocs"],
   },
   setPermissions: (newPermissions) =>
     set(() => ({
