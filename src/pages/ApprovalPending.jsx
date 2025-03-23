@@ -1,5 +1,6 @@
-import WithAuthLayout from "@/components/layout/WithAuthLayout";
-import WithLayout from "@/components/layout/WithLayout";
+import WithAuthentication from "@/components/hoc/withAuthentication";
+import WithHeadLayout from "@/components/layout/WithHeadLayout";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,9 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { userStore } from "@/lib/store";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function ApprovalPending() {
+  const navigate = useNavigate();
+
+  const removeUser = userStore((state) => state.removeUser);
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    removeUser();
+    navigate("/login");
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -46,10 +58,11 @@ function ApprovalPending() {
             You will be notified when the admin approves your request. We
             appreciate your patience!
           </p>
+          <Button onClick={handleLogout}>Logout</Button>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-export default WithLayout(ApprovalPending);
+export default WithAuthentication(WithHeadLayout(ApprovalPending));

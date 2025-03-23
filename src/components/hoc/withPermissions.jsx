@@ -11,8 +11,12 @@ const WithPermission = (pageName) => (WrappedComponent) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (user?.isApprovalPending) {
+      if (user?.isApprovalPending && !user?.isDocumentUploadComplete) {
         navigate("/approval-pending");
+      }
+
+      if (!user?.isApprovalPending && !user?.isDocumentUploadComplete) {
+        navigate("/uploaddocs");
       }
 
       if (permissions !== null && !permissions?.[role]?.includes(pageName)) {

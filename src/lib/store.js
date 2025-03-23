@@ -8,8 +8,10 @@ export const userStore = create(
       user: null,
       updateUser: (newUser) => set(() => ({ user: newUser })),
       removeUser: () => set(() => ({ user: null })),
-      markUserProfileComplete: () =>
-        set((state) => ({ user: { ...state.user, isProfileComplete: true } })),
+      markDocumentUploadComplete: () =>
+        set((state) => ({
+          user: { ...state.user, isDocumentUploadComplete: true },
+        })),
 
       markUserPolicy: () =>
         set((state) => ({ user: { ...state.user, isPolicy: true } })),
@@ -34,7 +36,7 @@ export const usePermissionStore = create((set) => ({
     ],
     districtAdmin: ["home", "profile", "blockAdmins", "gramSevaks"],
     blockAdmin: ["home", "profile", "gramSevaks", "upload"],
-    gramSevak: ["home", "profile", "books",  "uploaddocs"],
+    gramSevak: ["home", "profile", "books", "uploaddocs"],
   },
   setPermissions: (newPermissions) =>
     set(() => ({

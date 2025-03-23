@@ -3,7 +3,7 @@ import { handleApiError, httpClient, Result } from "../../utils";
 const uploadGovernmentDoc = async (formData) => {
   try {
     const response = await httpClient.post(
-      `/district/uploadGovernmentDoc`,
+      `/governmentDoc/uploadGovernmentDoc`,
       formData
     );
     const { data } = response;
