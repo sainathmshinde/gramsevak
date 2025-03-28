@@ -26,11 +26,11 @@ function Documents({ data }) {
       <CardContent className="space-y-4 pt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {data?.documents.map((doc, index) => (
-            <div key={index} className="space-y-2">
-              <Label>{doc?.documentName}</Label>
+            <div key={doc?.documentTypeId} className="space-y-2">
+              <Label>{doc?.documentType}</Label>
               <div className="flex items-center space-x-2">
                 <Input
-                  id={doc?.documentName.toLowerCase().replace(/\s+/g, "-")}
+                  id={doc?.documentType?.toLowerCase().replace(/\s+/g, "-")}
                   type="file"
                   className="w-full"
                 />

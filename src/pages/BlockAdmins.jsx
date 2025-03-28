@@ -51,7 +51,8 @@ function BlockAdmins() {
   };
 
   const handleSetBlockAdmin = (index) => async (e) => {
-    let response = await updateBlockAdmin(e);
+    const block = blocks[index];
+    let response = await updateBlockAdmin(block?.blockId, e);
 
     if (response.status === "success") {
       let nextState = produce(blocks, (draft) => {

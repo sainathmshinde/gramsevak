@@ -62,7 +62,8 @@ function DistrictAdmins() {
   };
 
   const handleSetDistrictAdmin = (index) => async (e) => {
-    let response = await updateDistrictAdmin(e);
+    let district = districts[index];
+    let response = await updateDistrictAdmin(district?.districtId, e);
 
     if (response.status === "success") {
       let nextState = produce(districts, (draft) => {
