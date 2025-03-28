@@ -18,6 +18,8 @@ import {
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { userDesignations } from "@/common/constants";
+import { userStore } from "@/lib/store";
+
 function Documents({ data }) {
   return (
     <Card>
@@ -155,14 +157,14 @@ function Profile() {
   const [districts, setDistricts] = useState([]);
   const [blocks, setBlocks] = useState([]);
   const [panchayats, setPanchayats] = useState([]);
-
+  const user = userStore((state) => state.user);
   useEffect(() => {
     (async () => {
       let res2 = await getDistricts();
 
       setDesignations(userDesignations);
       setDistricts(res2?.data);
-      let response = await getGramSevakById(1);
+      let response = await getGramSevakById(user?.userId);
       if (response.status === "success") {
         let blockResponse = await getBlocksByDistrictId(
           response?.data?.district?.districtId
