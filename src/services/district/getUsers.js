@@ -1,8 +1,10 @@
 import { handleApiError, httpClient, Result } from "@/utils";
 
-const getUsers = async () => {
+const getUsers = async (districtId) => {
   try {
-    const response = await httpClient.get(`/district/getusers`);
+    const response = await httpClient.get(
+      `/user/getUsersByDistrictID?districtId=${districtId}`
+    );
     const { data } = response;
     return Result.success(data);
   } catch (e) {

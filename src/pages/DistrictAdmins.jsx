@@ -33,13 +33,12 @@ function DistrictAdmins() {
     (async () => {
       let response = await getDistrictAdmins();
       setDistricts(response?.data);
-
-      let adminResponse = await getUsers();
-      setAdmins(adminResponse.data);
     })();
   }, []);
 
-  const handleEditDistrictAdmin = (districtIndex) => (e) => {
+  const handleEditDistrictAdmin = (districtIndex) => async (e) => {
+    let district = districts[districtIndex];
+
     let nextState = produce(districts, (draft) => {
       if (draft[districtIndex].hasOwnProperty("isEditMode")) {
         draft[districtIndex]["isEditMode"] =
@@ -48,6 +47,9 @@ function DistrictAdmins() {
         draft[districtIndex]["isEditMode"] = true;
       }
     });
+
+    let adminResponse = await getUsers(district?.districtId);
+    setAdmins(adminResponse.data);
 
     setDistricts(nextState);
   };

@@ -25,15 +25,17 @@ function BlockAdmins() {
 
   useEffect(() => {
     (async () => {
-      let response = await getBlockAdmins();
-      setBlocks(response?.data);
+      let params = new URLSearchParams(window.location.search);
+      let districtId = params.get("districtId");
 
-      let adminResponse = await getUsers();
-      setAdmins(adminResponse.data);
+      let response = await getBlockAdmins(districtId);
+      setBlocks(response?.data);
     })();
   }, []);
 
-  const handleEditBlockAdmin = (blockIndex) => (e) => {
+  const handleEditBlockAdmin = (blockIndex) => async (e) => {
+    const block = blocks[blockIndex];
+
     let nextState = produce(blocks, (draft) => {
       if (draft[blockIndex].hasOwnProperty("isEditMode")) {
         draft[blockIndex]["isEditMode"] = !draft[blockIndex]["isEditMode"];
@@ -41,6 +43,9 @@ function BlockAdmins() {
         draft[blockIndex]["isEditMode"] = true;
       }
     });
+
+    let adminResponse = await getUsers(block?.blockId);
+    setAdmins(adminResponse.data);
 
     setBlocks(nextState);
   };

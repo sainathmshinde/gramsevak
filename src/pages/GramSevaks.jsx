@@ -18,14 +18,16 @@ import {
   getGramSevakById,
   getgramsevakList,
 } from "@/services/gramsevak";
-import { CheckIcon, CrossIcon, EyeIcon, Search } from "lucide-react";
+import { CheckIcon, CrossIcon, EyeIcon, Search, X } from "lucide-react";
 import WithAuthentication from "@/components/hoc/withAuthentication";
 import WithPermission from "@/components/hoc/withPermissions";
 import toast from "react-hot-toast";
+import { userStore } from "@/lib/store";
 
 function GramSevakTable({ data, onEdit, onApprove }) {
   const [editingGramSevak, setEditingGramSevak] = useState(null);
   const [currentGramSevak, setCurrentGramSevak] = useState(null);
+  const user = userStore((state) => state.user);
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -96,7 +98,7 @@ function GramSevakTable({ data, onEdit, onApprove }) {
                   variant="outline"
                   onClick={handleApprove(index, "REJECTED")}
                 >
-                  <CrossIcon />
+                  <X />
                 </Button>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -165,8 +167,9 @@ function GramSevaks() {
     let response = await changeStatus(payload);
     if (response.status === "success") {
       setStatusValue({ id: 1, name: "ALL" });
+      toast.success("ग्रामसेवक यशस्वीरित्या मंजूर झाला!");
     } else {
-      toast.error("Unable to update, Please try again.");
+      toast.error("अपडेट करू शकत नाही, कृपया पुन्हा प्रयत्न करा.");
     }
   };
 

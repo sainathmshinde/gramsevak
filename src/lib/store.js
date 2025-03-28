@@ -35,7 +35,7 @@ export const usePermissionStore = create((set) => ({
       "upload",
     ],
     districtAdmin: ["home", "profile", "blockAdmins", "gramSevaks"],
-    blockAdmin: ["home", "profile", "gramSevaks", "upload"],
+    blockAdmin: ["home", "profile", "gramSevaks"],
     gramSevak: ["home", "profile", "books", "uploaddocs"],
   },
   setPermissions: (newPermissions) =>
