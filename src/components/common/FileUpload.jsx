@@ -28,8 +28,6 @@ export default function FileUpload({
     })();
   }, [value]);
 
-  console.log(value);
-
   const handleChange = (event) => {
     let newDoc = { ...doc };
     if (event?.target?.files?.length) {
