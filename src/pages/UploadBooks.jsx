@@ -120,7 +120,7 @@ function UploadModal({ isOpen, onClose }) {
       formData.append("book_data", JSON.stringify(payload));
     } else {
       let payload = {
-        effectiveDate: new Date()?.toISOString(),
+        effectiveDate: new Date().toISOString().split("T")[0],
         departmentId: document?.department?.departmentId,
         subject: document?.subject,
         grNumber: document?.grNumber,
