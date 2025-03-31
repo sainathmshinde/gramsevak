@@ -2,24 +2,23 @@ import WithLayout from "@/components/layout/WithLayout";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { userDesignations } from "@/common/constants";
+import FileUpload from "@/components/common/FileUpload";
 import WithAuthentication from "@/components/hoc/withAuthentication";
 import WithPermission from "@/components/hoc/withPermissions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import RSelect from "@/components/ui/RSelect";
+import { userStore } from "@/lib/store";
 import { getGramSevakById } from "@/services/gramsevak";
 import {
   getBlocksByDistrictId,
-  getDesignations,
   getDistricts,
   getPanchayatByBlockId,
 } from "@/services/preset";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { userDesignations } from "@/common/constants";
-import { userStore } from "@/lib/store";
-import FileUpload from "@/components/common/FileUpload";
 
 function Documents({ data }) {
   return (
