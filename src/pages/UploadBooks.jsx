@@ -105,7 +105,7 @@ function UploadModal({ isOpen, onClose }) {
       formData.append("subject", document?.subject);
       formData.append("file", document?.file);
     } else {
-      formData.append("date", new Date()?.toISOString());
+      formData.append("effectiveDate", new Date()?.toISOString());
       formData.append("departmentId", document?.department?.departmentId);
       formData.append("subject", document?.subject);
       formData.append("grNumber", document?.grNumber);
