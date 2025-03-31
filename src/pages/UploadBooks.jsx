@@ -325,7 +325,9 @@ function UploadBooks() {
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">विभाग:</span>
                       <span className="capitalize">
-                        {doc?.department?.name}
+                        {doc.type === "book"
+                          ? doc?.department?.name
+                          : doc?.departmentName?.name}
                       </span>
                     </div>
                   </div>
