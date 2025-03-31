@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { userDesignations } from "@/common/constants";
 import { userStore } from "@/lib/store";
+import FileUpload from "@/components/common/FileUpload";
 
 function Documents({ data }) {
   return (
@@ -27,16 +28,8 @@ function Documents({ data }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {data?.documents.map((doc, index) => (
             <div key={doc?.documentTypeId} className="space-y-2">
-              <Label>{doc?.documentType}</Label>
               <div className="flex items-center space-x-2">
-                <Input
-                  id={doc?.documentType?.toLowerCase().replace(/\s+/g, "-")}
-                  type="file"
-                  className="w-full"
-                />
-                <div className="w-10 h-10 bg-gray-200 flex items-center justify-center rounded">
-                  <span className="text-gray-500 text-xs">PDF</span>
-                </div>
+                <FileUpload value={doc} />
               </div>
             </div>
           ))}
