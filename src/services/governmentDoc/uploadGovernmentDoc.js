@@ -5,15 +5,9 @@ const uploadGovernmentDoc = async (formData, type) => {
     let response;
 
     if (type === "book") {
-      response = await httpClient.post(
-        `/governmentDoc/uploadGovernmentDoc/book`,
-        formData
-      );
+      response = await httpClient.post(`/uploadGovernmentDoc/book`, formData);
     } else {
-      response = await httpClient.post(
-        `/governmentDoc/uploadGovernmentDoc/gr`,
-        formData
-      );
+      response = await httpClient.post(`/uploadGovernmentDoc/gr`, formData);
     }
     const { data } = response;
     return Result.success(data);
