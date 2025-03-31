@@ -83,10 +83,10 @@ function GramSevakTable({ data, onEdit, onApprove }) {
               <TableCell>{gramSevak.district}</TableCell>
               <TableCell>{gramSevak.serviceId}</TableCell>
               <TableCell>
-                {gramSevak.is_approved ? "मंजूर" : "प्रलंबित"}
+                {gramSevak.isApproved ? "मंजूर" : "प्रलंबित"}
               </TableCell>
               <TableCell>
-                {gramSevak?.is_approved ? null : (
+                {gramSevak?.isApproved ? null : (
                   <div className="flex">
                     <Button
                       variant="outline"
