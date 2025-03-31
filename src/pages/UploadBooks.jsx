@@ -243,8 +243,16 @@ function UploadBooks() {
     (async () => {
       let response = await getUploadedDocuments(filter, search);
       if (response.status === "success") {
-        const books = response.data.books;
-        const grs = response.data.grs;
+        let books = response.data.books;
+        let grs = response.data.grs;
+
+        books.forEach((book) => {
+          book["type"] = "book";
+        });
+
+        grs.forEach((gr) => {
+          gr["type"] = "gr";
+        });
 
         const docs = [...books, ...grs];
 
@@ -305,7 +313,7 @@ function UploadBooks() {
                     ) : (
                       <FileText className="h-5 w-5 text-primary" />
                     )}
-                    {doc.documentName}
+                    {doc.type === "book" ? doc?.title : doc?.subject}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -316,7 +324,11 @@ function UploadBooks() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">विभाग:</span>
-                      <span className="capitalize">{doc.department}</span>
+                      <span className="capitalize">
+                        {doc.type === "book"
+                          ? doc?.department?.name
+                          : doc?.departmentName?.name}
+                      </span>
                     </div>
                   </div>
                 </CardContent>
@@ -325,7 +337,7 @@ function UploadBooks() {
                     variant="link"
                     className="text-primary hover:text-primary/80"
                     target="_blank"
-                    href={doc?.documentLink}
+                    href={doc?.filePath}
                   >
                     कागदपत्र पहा
                   </a>
