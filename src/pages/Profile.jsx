@@ -1,7 +1,5 @@
 import WithLayout from "@/components/layout/WithLayout";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { userDesignations } from "@/common/constants";
 import FileUpload from "@/components/common/FileUpload";
 import WithAuthentication from "@/components/hoc/withAuthentication";
@@ -150,6 +148,7 @@ function Profile() {
   const [blocks, setBlocks] = useState([]);
   const [panchayats, setPanchayats] = useState([]);
   const user = userStore((state) => state.user);
+
   useEffect(() => {
     (async () => {
       let res2 = await getDistricts();
