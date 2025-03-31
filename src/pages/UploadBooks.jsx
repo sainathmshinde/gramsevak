@@ -104,13 +104,20 @@ function UploadModal({ isOpen, onClose }) {
       // formData.append("departmentId", document?.department?.departmentId);
       // formData.append("subject", document?.subject);
 
+      // formData.append("bookData", JSON.stringify(payload));
       let payload = {
         subject: document?.subject,
         departmentId: document?.department?.departmentId,
       };
 
       formData.append("file", document?.file);
-      formData.append("bookData", JSON.stringify(payload));
+
+      formData.append(
+        "book_data",
+        new Blob([JSON.stringify(payload)], {
+          type: "application/json",
+        })
+      );
     } else {
       formData.append("effectiveDate", new Date()?.toISOString());
       formData.append("departmentId", document?.department?.departmentId);
