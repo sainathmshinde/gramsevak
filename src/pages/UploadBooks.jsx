@@ -105,7 +105,7 @@ function UploadModal({ isOpen, onClose }) {
       // formData.append("subject", document?.subject);
 
       let payload = {
-        subject: document?.file,
+        subject: document?.subject,
         departmentId: document?.department?.departmentId,
       };
 
