@@ -101,9 +101,13 @@ function UploadModal({ isOpen, onClose }) {
 
     const formData = new FormData();
     if (document?.type === "book") {
-      formData.append("departmentId", document?.department?.departmentId);
-      formData.append("subject", document?.subject);
+      // formData.append("departmentId", document?.department?.departmentId);
+      // formData.append("subject", document?.subject);
       formData.append("file", document?.file);
+      formData.append("bookData", {
+        subject: document?.file,
+        departmentId: document?.department?.departmentId,
+      });
     } else {
       formData.append("effectiveDate", new Date()?.toISOString());
       formData.append("departmentId", document?.department?.departmentId);
