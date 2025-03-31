@@ -1,11 +1,20 @@
 import { handleApiError, httpClient, Result } from "../../utils";
 
-const uploadGovernmentDoc = async (formData) => {
+const uploadGovernmentDoc = async (formData, type) => {
   try {
-    const response = await httpClient.post(
-      `/governmentDoc/uploadGovernmentDoc`,
-      formData
-    );
+    let response;
+
+    if (type === "book") {
+      response = await httpClient.post(
+        `/governmentDoc/uploadGovernmentDoc/book`,
+        formData
+      );
+    } else {
+      response = await httpClient.post(
+        `/governmentDoc/uploadGovernmentDoc/gr`,
+        formData
+      );
+    }
     const { data } = response;
     return Result.success(data);
   } catch (e) {

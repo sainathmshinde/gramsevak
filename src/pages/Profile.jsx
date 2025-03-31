@@ -37,6 +37,10 @@ function Documents({ data }) {
 }
 
 function BasicDetails({ data, designations, districts, blocks, panchayats }) {
+  useEffect(() => {
+    (() => {})();
+  }, [data]);
+
   return (
     <Card>
       <CardContent className="space-y-4 pt-6">

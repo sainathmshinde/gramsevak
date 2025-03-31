@@ -100,15 +100,21 @@ function UploadModal({ isOpen, onClose }) {
     }
 
     const formData = new FormData();
-    formData.append("date", document?.date);
-    formData.append("departmentId", document?.department?.departmentId);
-    formData.append("subject", document?.subject);
-    formData.append("type", document?.type);
-    formData.append("grNumber", document?.grNumber);
-    formData.append("grCode", document?.grCode);
-    formData.append("file", document?.file);
+    if (document?.type === "book") {
+      formData.append("departmentId", document?.department?.departmentId);
+      formData.append("subject", document?.subject);
+      formData.append("file", document?.file);
+    } else {
+      formData.append("date", new Date()?.toISOString());
+      formData.append("departmentId", document?.department?.departmentId);
+      formData.append("subject", document?.subject);
+      formData.append("grNumber", document?.grNumber);
+      formData.append("grCode", document?.grCode);
+      formData.append("file", document?.file);
+      formData.append("yojanaId", 1);
+    }
 
-    let response = await uploadGovernmentDoc(formData);
+    let response = await uploadGovernmentDoc(formData, document?.type);
     if (response?.status === "success") {
       toast.success("यशस्वीरित्या अपलोड केले");
     } else {
