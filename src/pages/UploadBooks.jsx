@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 import { Book, FileText, Search, Upload } from "lucide-react";
 import { produce } from "immer";
 import RSelect from "@/components/ui/RSelect";
-import { getDepartments } from "@/services/preset";
+import { getDepartments, getYojanas } from "@/services/preset";
 import DatePicker from "@/components/ui/datePicker";
 import WithAuthentication from "@/components/hoc/withAuthentication";
 import WithPermission from "@/components/hoc/withPermissions";
@@ -40,12 +40,18 @@ import toast from "react-hot-toast";
 
 function UploadModal({ isOpen, onClose }) {
   const [departments, setDepartments] = useState([]);
+  const [yojanas, setYojanas] = useState([]);
 
   useEffect(() => {
     (async () => {
       let response = await getDepartments();
       if (response?.status === "success") {
         setDepartments(response.data);
+      }
+
+      let yojnaResponse = await getYojanas();
+      if (yojnaResponse?.status === "success") {
+        setYojanas(yojnaResponse.data);
       }
     })();
   }, []);
@@ -85,6 +91,10 @@ function UploadModal({ isOpen, onClose }) {
           draft[name] = e;
           break;
 
+        case "yojana":
+          draft[name] = e;
+          break;
+
         default:
           break;
       }
@@ -101,10 +111,6 @@ function UploadModal({ isOpen, onClose }) {
 
     const formData = new FormData();
     if (document?.type === "book") {
-      // formData.append("departmentId", document?.department?.departmentId);
-      // formData.append("subject", document?.subject);
-
-      // formData.append("bookData", JSON.stringify(payload));
       let payload = {
         subject: document?.subject,
         departmentId: document?.department?.departmentId,
@@ -113,13 +119,16 @@ function UploadModal({ isOpen, onClose }) {
       formData.append("file", document?.file);
       formData.append("book_data", JSON.stringify(payload));
     } else {
-      formData.append("effectiveDate", new Date()?.toISOString());
-      formData.append("departmentId", document?.department?.departmentId);
-      formData.append("subject", document?.subject);
-      formData.append("grNumber", document?.grNumber);
-      formData.append("grCode", document?.grCode);
+      let payload = {
+        effectiveDate: new Date()?.toISOString(),
+        departmentId: document?.department?.departmentId,
+        subject: document?.subject,
+        grNumber: document?.grNumber,
+        grCode: document?.grCode,
+        yojanaId: document?.yojana?.yojanaId,
+      };
       formData.append("file", document?.file);
-      formData.append("yojanaId", 1);
+      formData.append("gr_data", JSON.stringify(payload));
     }
 
     let response = await uploadGovernmentDoc(formData, document?.type);
@@ -169,6 +178,19 @@ function UploadModal({ isOpen, onClose }) {
               placeholder="विभाग निवडा"
             />
           </div>
+
+          {document?.type === "gr" && (
+            <div className="space-y-2">
+              <Label>योजना</Label>
+              <RSelect
+                options={yojanas}
+                nameProperty="yojanaName"
+                valueProperty="yojanaId"
+                onChange={handleChange("yojana")}
+                placeholder="योजना निवडा"
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>विषय</Label>
