@@ -243,7 +243,12 @@ function UploadBooks() {
     (async () => {
       let response = await getUploadedDocuments(filter, search);
       if (response.status === "success") {
-        setDocuments(response.data);
+        const books = response.data.books;
+        const grs = response.data.grs;
+
+        const docs = [...books, ...grs];
+
+        setDocuments(docs);
       } else {
         toast.error("कागदपत्र मिळवता आले नाही, कृपया पृष्ठ रीफ्रेश करा");
       }
@@ -316,12 +321,14 @@ function UploadBooks() {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button
+                  <a
                     variant="link"
                     className="text-primary hover:text-primary/80"
+                    target="_blank"
+                    href={doc?.documentLink}
                   >
                     कागदपत्र पहा
-                  </Button>
+                  </a>
                 </CardFooter>
               </Card>
             ))}
