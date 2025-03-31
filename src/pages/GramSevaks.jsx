@@ -83,23 +83,27 @@ function GramSevakTable({ data, onEdit, onApprove }) {
               <TableCell>{gramSevak.district}</TableCell>
               <TableCell>{gramSevak.serviceId}</TableCell>
               <TableCell>
-                {gramSevak.isApproved ? "मंजूर" : "प्रलंबित"}
+                {gramSevak.is_approved ? "मंजूर" : "प्रलंबित"}
               </TableCell>
               <TableCell>
-                <Button
-                  variant="outline"
-                  className="mr-2"
-                  onClick={handleApprove(index, "APPROVED")}
-                >
-                  <CheckIcon />
-                </Button>
+                {gramSevak?.is_approved ? null : (
+                  <div className="flex">
+                    <Button
+                      variant="outline"
+                      className="mr-2"
+                      onClick={handleApprove(index, "APPROVED")}
+                    >
+                      <CheckIcon />
+                    </Button>
 
-                <Button
-                  variant="outline"
-                  onClick={handleApprove(index, "REJECTED")}
-                >
-                  <X />
-                </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleApprove(index, "REJECTED")}
+                    >
+                      <X />
+                    </Button>
+                  </div>
+                )}
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button
