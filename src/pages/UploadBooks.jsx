@@ -111,13 +111,7 @@ function UploadModal({ isOpen, onClose }) {
       };
 
       formData.append("file", document?.file);
-
-      formData.append(
-        "book_data",
-        new Blob([JSON.stringify(payload)], {
-          type: "application/json",
-        })
-      );
+      formData.append("book_data", JSON.stringify(payload));
     } else {
       formData.append("effectiveDate", new Date()?.toISOString());
       formData.append("departmentId", document?.department?.departmentId);
