@@ -110,7 +110,7 @@ function UploadModal({ isOpen, onClose }) {
       };
 
       formData.append("file", document?.file);
-      formData.append("bookData", payload?.toString());
+      formData.append("bookData", JSON.stringify(payload));
     } else {
       formData.append("effectiveDate", new Date()?.toISOString());
       formData.append("departmentId", document?.department?.departmentId);
