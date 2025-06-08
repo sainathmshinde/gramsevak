@@ -37,6 +37,7 @@ import {
   uploadGovernmentDoc,
 } from "@/services/governmentDoc";
 import toast from "react-hot-toast";
+import DateInput from "@/components/ui/dateInput";
 
 function UploadModal({ isOpen, onClose }) {
   const [departments, setDepartments] = useState([]);
@@ -67,6 +68,8 @@ function UploadModal({ isOpen, onClose }) {
   });
 
   const handleChange = (name) => (e) => {
+    // debugger;
+    let value = e.target.value;
     const nextState = produce(document, (draft) => {
       switch (name) {
         case "type":
@@ -74,7 +77,7 @@ function UploadModal({ isOpen, onClose }) {
           break;
 
         case "date":
-          draft[name] = e;
+          draft[name] = value;
           break;
 
         case "subject":
@@ -165,7 +168,11 @@ function UploadModal({ isOpen, onClose }) {
 
           <div className="space-y-2">
             <Label>दिनांक</Label>
-            <DatePicker onChange={handleChange("date")} />
+            <DateInput
+              name="date"
+              value={document.date || ""}
+              onChange={handleChange("date")}
+            />
           </div>
 
           <div className="space-y-2">

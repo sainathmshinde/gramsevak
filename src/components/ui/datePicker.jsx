@@ -93,6 +93,7 @@ export function DatePicker({
   };
 
   const handleChangeMonth = (event) => {
+    debugger;
     setMonth(event);
 
     const currentDate = selectedDate || new Date();
