@@ -72,7 +72,8 @@ function Register() {
           draft[name] = e;
           break;
         case "mobileNumber":
-          draft[name] = e.target.value;
+          const number = e.target.value;
+          draft[name] = `+91${number}`;
           break;
         case "whatsappMobileNumber":
           draft[name] = e.target.value;
@@ -212,14 +213,41 @@ function Register() {
               <Label htmlFor="mobileNumber">
                 मोबाईल नंबर <span className="text-red-500 ml-1">*</span>
               </Label>
-              <Input
-                id="mobileNumber"
-                name="mobileNumber"
-                type="tel"
-                required
-                value={formData.mobileNumber}
-                onChange={handleChange("mobileNumber")}
-              />
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    left: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "#555",
+                    fontSize: "16px",
+                    pointerEvents: "none",
+                  }}
+                >
+                  +91
+                </span>
+                <Input
+                  id="mobileNumber"
+                  name="mobileNumber"
+                  type="tel"
+                  required
+                  value={formData.mobileNumber}
+                  onChange={handleChange("mobileNumber")}
+                  style={{
+                    width: "100%",
+                    padding: "10px 10px 10px 45px",
+                    fontSize: "16px",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                  }}
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="whatsappMobileNumber">

@@ -47,18 +47,27 @@ function Login() {
   };
 
   const handleSendOtp = async () => {
-    if (!loginDetails?.mobileNumber) {
-      toast.error("कृपया मोबाइल क्रमांक प्रविष्ट करा");
+    const { mobileNumber } = loginDetails;
+
+    if (!mobileNumber || mobileNumber.trim().length !== 10) {
+      toast.error("कृपया वैध 10-अंकी मोबाइल क्रमांक प्रविष्ट करा");
       return;
     }
 
-    let response = await sendOtp(loginDetails?.mobileNumber);
-    if (response?.status === "success") {
-      setOtpSent(true);
-      setTimer(30); // Start 30-second timer
-      toast.success("OTP यशस्वीरित्या पाठवला गेला!");
-    } else {
-      toast.error("OTP पाठवता आला नाही, कृपया पुन्हा प्रयत्न करा.");
+    const fullMobileNumber = `+91${mobileNumber}`;
+
+    try {
+      let response = await sendOtp(fullMobileNumber);
+
+      if (response?.status === "success") {
+        setOtpSent(true);
+        setTimer(30); // Start 30-second timer
+        toast.success("OTP यशस्वीरित्या पाठवला गेला!");
+      } else {
+        toast.error("OTP पाठवता आला नाही, कृपया पुन्हा प्रयत्न करा.");
+      }
+    } catch (error) {
+      toast.error("सेवा अनुपलब्ध आहे. कृपया नंतर पुन्हा प्रयत्न करा.");
     }
   };
 
@@ -91,13 +100,42 @@ function Login() {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="mobile">मोबाइल क्रमांक</Label>
-                <Input
-                  id="mobile"
-                  name="mobile"
-                  placeholder="आपला मोबाइल क्रमांक प्रविष्ट करा"
-                  value={loginDetails?.mobileNumber}
-                  onChange={handleChange("mobileNumber")}
-                />
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    maxWidth: "300px",
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: "12px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      color: "#555",
+                      fontSize: "16px",
+                      pointerEvents: "none",
+                    }}
+                  >
+                    +91
+                  </span>
+                  <input
+                    id="mobile"
+                    name="mobile"
+                    type="tel"
+                    placeholder="आपला मोबाइल क्रमांक प्रविष्ट करा"
+                    value={loginDetails?.mobileNumber}
+                    onChange={handleChange("mobileNumber")}
+                    style={{
+                      width: "100%",
+                      padding: "10px 10px 10px 45px",
+                      fontSize: "16px",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                    }}
+                  />
+                </div>
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="otp">वन-टाइम पासवर्ड</Label>
